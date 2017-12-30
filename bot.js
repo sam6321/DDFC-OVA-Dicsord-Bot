@@ -15,16 +15,6 @@ let commandDispatcher = new Command.Dispatcher();
 // Add all commands from this directory in to the dispatcher.
 commandDispatcher.addDirectory('./Commands');
 
-// Add the help command to list all available commands.
-commandDispatcher.add('help', (bot, msg, args) => {
-    let availableCommands = "Available Commands: ";
-    commandDispatcher.each(command => {
-        availableCommands += `\n ${command}`;
-    });
-
-    msg.channel.send(availableCommands);
-});
-
 bot.on('ready', () =>
 {
     console.log("Bot is ready.");
@@ -86,7 +76,7 @@ bot.on('message', (msg) =>
         let id = funcs.randInt(000000000000,999999999999);
         msg.channel.send("Whoops! Something went wrong executing your command. This has been logged. ID:"+id);
         let report = "\n-Error occured in"+msg.guild.name+", at"+date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear()+" with ID:"+id+"-\n"+err;
-        fs.appendFile("./log.txt", errorLog + report + "\n");
+        fs.appendFile("./log.txt", report + "\n");
         console.log(report);
     }
 
