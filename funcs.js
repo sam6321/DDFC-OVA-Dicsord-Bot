@@ -34,6 +34,34 @@ module.exports.guildfolder = function (guild)
     }
 }
 
+module.exports.findMember = function(msg, args)
+{
+    let member;
+    if (args[1].startsWith("<@"))
+    {
+        member = msg.mentions.members.first();
+    }
+    else if (args[1].includes("#"))
+    {
+        let iter = msg.guild.members.entries();
+        for (let i=0;i<msg.guild.members.size;i++)
+        {
+            let M = iter.next().value;
+            console.log(M);
+            if (M[1].user.tag == args[1])
+            {
+                member = M[1];
+                break;
+            }
+        }
+    }
+    else if (args[1].length == 18)
+    {
+        member = msg.guild.members.get(args[1]);
+    }
+    return member;
+}
+
 module.exports.randInt = function(min,max)
 {
     return Math.floor(Math.random() * (max - min + 1)) + min;
