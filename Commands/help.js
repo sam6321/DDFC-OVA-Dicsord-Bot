@@ -4,8 +4,8 @@ exports.description = "Recieve a list of commands."
 
 module.exports = function (bot, msg, args)
 {
-	let embed = new Discord.RichEmbed().setTitle("Command List");
-	let desc = "";
+    let embed = new Discord.RichEmbed().setTitle("Command List");
+    let desc = "";
     fs.readdir("./", (err, files) => 
     {
         files.forEach(file => 
