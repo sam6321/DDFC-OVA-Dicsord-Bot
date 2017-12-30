@@ -21,7 +21,6 @@ module.exports = function (bot, msg, args)
         msg.channel.send("I don't appear to have any die with one side, wonder why...");
         return;
     }
-
     if (args[1] == '2')
     {
         switch (outcome)
