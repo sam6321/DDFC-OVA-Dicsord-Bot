@@ -5,15 +5,15 @@ module.exports.guildfolder = function (guild)
 {
 	var init_settings = 
 	{
-		banned_users	:	[],
-		custom_commands	:	[],
-		prefix			:	bSettings.prefix,
-		admins			:	[guild.ownerID],
-		enabled_events	:	[],
+		banned_users	:   [],
+		custom_commands	:   [],
+		prefix		:   bSettings.prefix,
+		admins		:   [guild.ownerID],
+		enabled_events	:   [],
 		greet           :   true,
-		greet_channel	:	guild.defaultChannel.id,
-		mod_channel		:   null,  
-		disabled		:   []
+		greet_channel	:   guild.defaultChannel.id,
+		mod_channel	:   null,  
+		disabled	:   []
 	}
 	if (fs.existsSync("./Guilds/"+guild.id))
 	{
