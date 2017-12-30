@@ -2,7 +2,7 @@ var funcs = require("../funcs.js");
 
 exports.description = "Rolls a die (or a coin!)."
 
-module.exports = function (bot, msg, args)
+exports.call = function (bot, msg, args)
 {
     let max = 6;
     if (args[1])
