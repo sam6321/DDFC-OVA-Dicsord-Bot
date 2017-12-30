@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const bot = new Discord.Client();
 
 var fs = require('fs');
-var bSettings = require('./config.json');
+var bSettings = require('./settings.json');
 var funcs = require('./funcs.js');
 
 require.extensions['.txt'] = function (module, filename) 
