@@ -10,7 +10,7 @@ module.exports = function (bot, msg, args)
     {
         files.forEach(file => 
         {
-            desc += "__**"+file.substr(0, file.length-1)+"**__\n"+require(file).description+"\n";
+            desc += "__**"+file.substr(0, file.length-1)+"**__\n"+require(file).description+"\n\n";
         });
         embed.setDescription(desc);
         msg.channel.send(embed);
