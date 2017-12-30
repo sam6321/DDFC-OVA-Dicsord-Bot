@@ -1,12 +1,14 @@
 const fs = require('fs');
 const Discord = require('discord.js');
+var funcs = require('./funcs.js');
 
 exports.description = "Recieve a list of commands.";
+exports.usage = "(prefix)help";
 
 exports.call = function (bot, msg, args)
 {
     let embed = new Discord.RichEmbed().setTitle("Command List");
-    let desc = "";
+    let desc = "**The prefix for this server is "+require(funcs.guildFolder(msg.guild)).prefix+"**\n\n";
     fs.readdir("./Commands", (err, files) => 
     {
         files.forEach(file => 
