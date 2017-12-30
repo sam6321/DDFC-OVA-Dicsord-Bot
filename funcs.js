@@ -1,5 +1,5 @@
 var fs = require('fs');
-var global_settings = require("./config.json");
+var bSettings = require("./settings.json");
 
 module.exports.guildfolder = function (guild)
 {
@@ -7,7 +7,7 @@ module.exports.guildfolder = function (guild)
 	{
 		banned_users	:	[],
 		custom_commands	:	[],
-		prefix			:	global_settings.prefix,
+		prefix			:	bSettings.prefix,
 		admins			:	[guild.ownerID],
 		enabled_events	:	[],
 		greet           :   true,
