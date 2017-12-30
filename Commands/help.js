@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-var funcs = require('./funcs.js');
+var funcs = require('../funcs.js');
 
 exports.description = "Recieve a list of commands.";
 exports.usage = "(prefix)help";
