@@ -26,7 +26,7 @@ module.exports = function (bot, msg, args)
         switch (outcome)
         {
             case 1:
-                msg.channel.send("I flipped a coin and got  tails!");
+                msg.channel.send("I flipped a coin and got tails!");
                 break;
             case 2:
                 msg.channel.send("I flipped a coin and got heads!");

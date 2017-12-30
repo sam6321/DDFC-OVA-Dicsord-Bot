@@ -1,8 +1,15 @@
-var fs = require('fs');
-var bSettings = require("./settings.json");
+const fs = require('fs');
+const bSettings = require("./settings.json");
 
 module.exports.guildfolder = function (guild)
 {
+    let textChannel = guild.channels.find('type', 'text');
+
+    if(!textChannel)
+    {
+        console.error(`funcs: Guild ${guild.name} does not have a text channel!`);
+    }
+
     var init_settings = 
     {
         banned_users    :   [],
@@ -11,10 +18,11 @@ module.exports.guildfolder = function (guild)
         admins          :   [guild.ownerID],
         enabled_events  :   [],
         greet           :   true,
-        greet_channel   :   guild.defaultChannel.id,
+        greet_channel   :   textChannel.id, // defaultChannel is deprecated, just default to the very first channel.
         mod_channel     :   null,  
         disabled        :   []
-    }
+    };
+
     if (fs.existsSync("./Guilds/"+guild.id))
     {
         return "./Guilds/"+guild.id;
