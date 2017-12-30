@@ -15,16 +15,6 @@ let commandDispatcher = new Command.Dispatcher();
 // Add all commands from this directory in to the dispatcher.
 commandDispatcher.addDirectory('./Commands');
 
-// Add the help command to list all available commands.
-commandDispatcher.add('help', (bot, msg, args) => {
-    let availableCommands = "Available Commands: ";
-    commandDispatcher.each(command => {
-        availableCommands += `\n ${command}`;
-    });
-
-    msg.channel.send(availableCommands);
-});
-
 bot.on('ready', () =>
 {
     console.log("Bot is ready.");
