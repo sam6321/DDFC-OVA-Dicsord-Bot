@@ -1,5 +1,5 @@
 const fs = require('fs');
-
+const Discord = require('discord.js');
 exports.description = "Recieve a list of commands."
 
 module.exports = function (bot, msg, args)
