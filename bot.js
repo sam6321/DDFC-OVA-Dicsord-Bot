@@ -55,8 +55,9 @@ bot.on('message', (msg) =>
     catch(err)
     {
         let date = new Date();
-        msg.channel.send("Whoops! Something went wrong executing your command. This has been logged.");
-        let report = "\n-Error occured in"+msg.guild.name+", at"+date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear()+"-\n"+err;
+        let id = funcs.randInt(000000000000,999999999999);
+        msg.channel.send("Whoops! Something went wrong executing your command. This has been logged. ID:"+id);
+        let report = "\n-Error occured in"+msg.guild.name+", at"+date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear()+" with ID:"+id+"-\n"+err;
         fs.writeFileSync("./log.txt", errorLog+report);
         console.log(report);
     }
