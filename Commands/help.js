@@ -8,12 +8,12 @@ exports.usage = "(prefix)help";
 exports.call = function (bot, msg, args)
 {
     let embed = new Discord.RichEmbed().setTitle("Command List");
-    let desc = "**The prefix for this server is "+require(funcs.guildfolder(msg.guild)).prefix+"**\n\n";
+    let desc = "**The prefix for this server is "+require("."+funcs.guildfolder(msg.guild)+"/settings.json").prefix+"**\n\n";
     fs.readdir("./Commands", (err, files) => 
     {
         files.forEach(file => 
         {
-            desc += "__***"+file.substr(0, file.length-3)+"**__\n"+require("./"+file).description+"\n\n";
+            desc += "__***"+file.substr(0, file.length-3)+"**__\n"+require("./"+file).description+"\n__Usage:__ "+require("./"+file).usage+"\n\n";
             console.log(require("./"+file).description);
         });
         embed.setDescription(desc);
