@@ -8,7 +8,7 @@ exports.usage = "(prefix)help";
 exports.call = function (bot, msg, args)
 {
     let embed = new Discord.RichEmbed().setTitle("Command List");
-    let desc = "**The prefix for this server is "+require(funcs.guildFolder(msg.guild)).prefix+"**\n\n";
+    let desc = "**The prefix for this server is "+require(funcs.guildfolder(msg.guild)).prefix+"**\n\n";
     fs.readdir("./Commands", (err, files) => 
     {
         files.forEach(file => 
