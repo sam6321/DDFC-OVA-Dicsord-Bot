@@ -11,23 +11,23 @@ exports.call = function (bot, msg, args)
     let type = 'any';
     if (args[2].toLowerCase() == "bots")
     {
-    	any = 'bots';
+        any = 'bots';
     }
     else if (args[2].toLowerCase() == "users")
     {
-    	any = 'users';
+        any = 'users';
     }
     msg.channel.fetchMessages({limit:amount}).then((messages) =>
     {
-    	if (any == 'bots')
-    	{
-    		messages = messages.filter(msg => msg.author.bot);
-    	}
-    	else if (any == 'users')
-    	{
-    		messages = messages.filter(msg => !msg.author.bot);
-    	}
-    	msg.channel.send("Deleted "+messages.size+" messages!");
+        if (any == 'bots')
+        {
+            messages = messages.filter(msg => msg.author.bot);
+        }
+        else if (any == 'users')
+        {
+            messages = messages.filter(msg => !msg.author.bot);
+        }
+        msg.channel.send("Deleted "+messages.size+" messages!");
         messages.deleteAll();
     });
 }
