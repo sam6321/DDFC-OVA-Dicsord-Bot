@@ -7,6 +7,10 @@ exports.usage = "(prefix)kick (mention/id/username+tag) (reason)";
 
 exports.call = function (bot, msg, args)
 {
+    if (!msg.member.hasPermission("KICK_MEMBERS"))
+    {
+        msg.channel.send("Insufficient permissions.");
+    }
     let member = funcs.findMember(msg, args);
     if (!member)
     {
