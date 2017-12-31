@@ -1,1 +1,13 @@
 Beginning of error log
+
+-Error occured inDDFC OVA Bot Test Server, at30/11/2017 with ID:803347476913-
+TypeError: funcs.guildFolder is not a function
+
+-Error occured inDDFC OVA Bot Test Server, at30/11/2017 with ID:887767946564-
+ReferenceError: Discord is not defined
+
+-Error occured inDDFC OVA Bot Test Server, at30/11/2017 with ID:744143888898-
+ReferenceError: Discord is not defined
+
+-Error occured inDDFC OVA Bot Test Server, at31/11/2017 with ID:994796328965-
+ReferenceError: Discord is not defined

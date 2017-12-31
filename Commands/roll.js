@@ -1,8 +1,9 @@
 var funcs = require("../funcs.js");
 
 exports.description = "Rolls a die (or a coin!)."
+exports.usage = "(prefix)roll (number of sides)";
 
-module.exports = function (bot, msg, args)
+exports.call = function (bot, msg, args)
 {
     let max = 6;
     if (args[1])
@@ -11,7 +12,7 @@ module.exports = function (bot, msg, args)
     }
     let outcome = funcs.randInt(1, max);
 
-    if (max<1 || !max) //User being a douche and trying to roll a die that doesn't exist :lul:
+    if (max<1) //User being a douche and trying to roll a die that doesn't exist :lul:
     {
         msg.channel.send("I don't appear to have any die with "+args[1]+" sides, wonder why...");
         return;

@@ -47,10 +47,8 @@ bot.on('message', (msg) =>
             return;
         }
 
-        // Ignore the prefix.
-        let content = msg.content.slice(guild_settings.prefix.length);
-        // Split args into words.
-        args = content.split(' ');
+        // Ignore the prefix, and split args in to words.
+        let args = msg.content.slice(guild_settings.prefix.length).split(' ');
 
         if (guild_settings.disabled[args[0].toLowerCase()])
         {
@@ -73,9 +71,9 @@ bot.on('message', (msg) =>
     catch(err)
     {
         let date = new Date();
-        let id = funcs.randInt(000000000000,999999999999);
-        msg.channel.send("Whoops! Something went wrong executing your command. This has been logged. ID:"+id);
-        let report = "\n-Error occured in"+msg.guild.name+", at"+date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear()+" with ID:"+id+"-\n"+err;
+        let id = funcs.randInt(0, 999999999999);
+        msg.channel.send("Whoops! Something went wrong executing your command. This has been logged. ID: "+id);
+        let report = "\n-Error occured in "+msg.guild.name+", at "+date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear()+" with ID: "+id+"-\n"+err;
         fs.appendFile("./log.txt", report + "\n");
         console.log(report);
     }
