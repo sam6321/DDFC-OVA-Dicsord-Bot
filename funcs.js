@@ -66,6 +66,31 @@ module.exports.getUserValue = function(user, valueName)
     return values[valueName];
 };
 
+module.exports.parseString = function(string)
+{
+    let out = '';
+    switch (string)
+    {
+        case "null":
+            return null;
+        case "undefined":
+            return undefined
+        case "true":
+            return true;
+        case "false":
+            return false
+        default:
+            if (parseInt(string)+'' == string)
+            {
+                return parseInt(string);
+            }
+            else
+            {
+                return string;
+            }
+    }
+}
+
 module.exports.findMember = function(msg, args)
 {
     let member;

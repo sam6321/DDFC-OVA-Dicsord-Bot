@@ -54,7 +54,6 @@ bot.on('message', (msg) =>
         {
             return; //return if the command is disabled in the guild
         }
-
             try
             {
                 // Dispatch the command to the specified function.
@@ -67,7 +66,7 @@ bot.on('message', (msg) =>
                 msg.channel.send("Whoops! Something went wrong executing your command. This has been logged. ID: "+id);
                 let report = "\n-Error occured in "+msg.guild.name+", at "+date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear()+" with ID: "+id+"-\n"+err;
                 fs.appendFile("./log.txt", report + "\n");
-                console.log(report);
+                console.error(err);
             }
     }
     catch(err)

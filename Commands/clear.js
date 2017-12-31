@@ -11,19 +11,19 @@ exports.call = function (bot, msg, args)
     let type = 'any';
     if (args[2].toLowerCase() == "bots")
     {
-        any = 'bots';
+        type = 'bots';
     }
     else if (args[2].toLowerCase() == "users")
     {
-        any = 'users';
+        type = 'users';
     }
     msg.channel.fetchMessages({limit:amount}).then((messages) =>
     {
-        if (any == 'bots')
+        if (type == 'bots')
         {
             messages = messages.filter(msg => msg.author.bot);
         }
-        else if (any == 'users')
+        else if (type == 'users')
         {
             messages = messages.filter(msg => !msg.author.bot);
         }
