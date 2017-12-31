@@ -1,0 +1,18 @@
+const fs = require('fs');
+const Discord = require('discord.js');
+var funcs = require("../funcs.js");
+
+exports.description = "Kick a user.";
+exports.usage = "(prefix)kick (mention/id/username+tag) (reason)";
+
+exports.call = function (bot, msg, args)
+{
+    let member = funcs.findMember(msg, args);
+    if (!member)
+    {
+        msg.channel.send("Couldn't find that member."+(msg.content.includes("#") ? " Maybe try mentioning that user instead?" : ""));
+        return;
+    }
+    member.kick(args.length > 2 ? args.slice(2).join(" ") : "No reason given");
+    msg.channel.send(member.user.tag+" was kicked! Reason: "+(args.length > 2 ? args.slice(2).join(" ") : "No reason given"));
+}
