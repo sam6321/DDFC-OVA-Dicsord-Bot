@@ -49,12 +49,12 @@ messageHandlers.group = function (msg)
 {
     // Just use whatever the default prefix is for group chats.
     // This bot will probably never be in group chat anyway.
-    if(!msg.content.startsWith(DEFAULT_PREFIX))
+    if(!msg.content.startsWith(bSettings.prefix))
     {
         return;
     }
 
-    let args = msg.content.slice(DEFAULT_PREFIX.length).split(' ');
+    let args = msg.content.slice(bSettings.prefix.length).split(' ');
     commandDispatcher.dispatch(args[0], bot, msg, args);
 };
 
