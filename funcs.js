@@ -32,7 +32,19 @@ module.exports.guildfolder = function (guild)
         fs.mkdirSync("./Guilds/"+guild.id);
         fs.writeFileSync("./Guilds/"+guild.id+"/settings.json",JSON.stringify(init_settings,null,4));
     }
-}
+};
+
+module.exports.memberFolder = function(user)
+{
+    let folder = `./Users/${user.id}`;
+
+    if(!fs.existsSync(folder))
+    {
+        fs.mkdirSync(folder);
+    }
+
+    return folder;
+};
 
 module.exports.findMember = function(msg, args)
 {
