@@ -7,7 +7,7 @@ exports.usage = "(prefix)ban (mention/id/username+tag) (reason)";
 
 exports.call = function (bot, msg, args)
 {
-	let member = funcs.findMember(msg, args);
+    let member = funcs.findMember(msg, args);
     if (!member)
     {
         msg.channel.send("Couldn't find that member."+msg.content.includes("#") ? " Maybe try mentioning that user instead?" : "");
