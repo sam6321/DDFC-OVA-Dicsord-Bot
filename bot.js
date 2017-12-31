@@ -54,30 +54,28 @@ bot.on('message', (msg) =>
         {
             return; //return if the command is disabled in the guild
         }
+
+            try
+            {
+                // Dispatch the command to the specified function.
+                commandDispatcher.dispatch(args[0], bot, msg, args);
+            }
+            catch(err)
+            {
+                let date = new Date();
+                let id = funcs.randInt(0, 999999999999);
+                msg.channel.send("Whoops! Something went wrong executing your command. This has been logged. ID: "+id);
+                let report = "\n-Error occured in "+msg.guild.name+", at "+date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear()+" with ID: "+id+"-\n"+err;
+                fs.appendFile("./log.txt", report + "\n");
+                console.log(report);
+            }
     }
     catch(err)
     {
         // Internal error, don't report to the user
         console.log(`main: An internal exception occurred processing message: ${msg.content}.`);
         console.error(err);
-        return;
     }
-
-    try 
-    {
-        // Dispatch the command to the specified function.
-        commandDispatcher.dispatch(args[0], bot, msg, args);
-    }
-    catch(err)
-    {
-        let date = new Date();
-        let id = funcs.randInt(0, 999999999999);
-        msg.channel.send("Whoops! Something went wrong executing your command. This has been logged. ID: "+id);
-        let report = "\n-Error occured in "+msg.guild.name+", at "+date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear()+" with ID: "+id+"-\n"+err;
-        fs.appendFile("./log.txt", report + "\n");
-        console.log(report);
-    }
-
 });
 
 if(!bSettings.token) 

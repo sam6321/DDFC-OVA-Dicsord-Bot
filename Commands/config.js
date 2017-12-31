@@ -7,7 +7,7 @@ exports.usage = "(prefix)config (display/set) (config name) (value/undefined)";
 
 exports.call = function (bot, msg, args)
 {
-    let guild_settings = require("./"+funcs.guildfolder(msg.guild)+"/settings.json");
+    let guild_settings = require(funcs.guildfolder(msg.guild)+"/settings.json");
     let desc = '';
     let embed = new Discord.RichEmbed();
     if (args[1].toLowerCase() == "set")

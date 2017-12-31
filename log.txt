@@ -11,3 +11,15 @@ ReferenceError: Discord is not defined
 
 -Error occured inDDFC OVA Bot Test Server, at31/11/2017 with ID:994796328965-
 ReferenceError: Discord is not defined
+
+-Error occured in DDFC OVA Bot Test Server, at 31/11/2017 with ID: 900988224492-
+ReferenceError: args is not defined
+
+-Error occured in DDFC OVA Bot Test Server, at 31/11/2017 with ID: 647000154890-
+ReferenceError: args is not defined
+
+-Error occured in DDFC OVA Bot Test Server, at 31/11/2017 with ID: 976071592364-
+ReferenceError: args is not defined
+
+-Error occured in DDFC OVA Bot Test Server, at 31/11/2017 with ID: 754176608277-
+ReferenceError: args is not defined
