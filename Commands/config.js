@@ -55,6 +55,10 @@ exports.call = function (bot, msg, args)
         else
         {
             guild_settings[args[2]] = funcs.parseString(args.slice(3).join(" "));
+            if (funcs.parseString(args.slice(3).join(" ")) == undefined)
+            {
+            	delete guild_settings[args[2]];
+            }
             msg.channel.send("Set config "+args[2]+" to "+guild_settings[args[2]]);
         }
     }
