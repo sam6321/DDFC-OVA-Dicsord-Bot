@@ -9,7 +9,6 @@ const fs = require('fs');
 const funcs = require('./funcs.js');
 const bSettings = require("./settings.json");
 
-const DEFAULT_PREFIX = "*";
 const bot = new Discord.Client();
 let commandDispatcher = new Command.Dispatcher();
 commandDispatcher.addDirectory('./Commands'); // Add all commands from this directory in to the dispatcher.
