@@ -41,3 +41,6 @@ Error: ENOENT: no such file or directory, open 'C:\Users\Paulr\OneDrive\Document
 
 -Error occured in DDFC OVA Bot Test Server, at 31/11/2017 with ID: 381373290533-
 TypeError: Cannot read property 'constructor' of null
+
+-Error occured in DDFC OVA Bot Test Server, at 31/11/2017 with ID: 626046342395-
+TypeError: Cannot read property 'constructor' of undefined

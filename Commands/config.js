@@ -29,12 +29,12 @@ exports.call = function (bot, msg, args)
         }
         for (let i=0;i<guild_settings[args[2]].length;i++)
         {
-        	if (guild_settings[args[2]] == funcs.parseString(args.slice(3).join(" ")))
+        	if (guild_settings[args[2]][i] == funcs.parseString(args.slice(3).join(" ")))
         	{
         		guild_settings[args[2]].splice(i,1);
         	}
         }
-        msg.channel.send("Removed item from "+args.slice(3).join(" ")+" to "+args[2]);
+        msg.channel.send("Removed item "+args.slice(3).join(" ")+" from "+args[2]);
     }
     else if (args[1].toLowerCase() == "set")
     {
