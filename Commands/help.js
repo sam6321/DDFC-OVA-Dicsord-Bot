@@ -13,11 +13,14 @@ exports.call = function (bot, msg, args)
     {
         files.forEach(file => 
         {
-            desc += "__***"+file.substr(0, file.length-3)+"**__\n"+require("./"+file).description+"\n__Usage:__ "+require("./"+file).usage+"\n\n";
-            console.log(require("./"+file).description);
+            let filename = file.substr(0, file.length - 3);
+            let m = require(`./${file}`);
+            desc += `__***${filename}**__\n${m.description}\n__Usage:__ ${m.usage}\n\n`;
+
+            console.log(m.description);
         });
+        
         embed.setDescription(desc);
         msg.channel.send({embed});
-        return;
     });
-}
+};

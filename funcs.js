@@ -1,6 +1,8 @@
 const fs = require('fs');
 const bSettings = require("./settings.json");
 
+const USER_VALUE_PATH = './user_values.json';
+
 module.exports.guildfolder = function (guild)
 {
     let textChannel = guild.channels.find('type', 'text');
@@ -34,16 +36,34 @@ module.exports.guildfolder = function (guild)
     }
 };
 
-module.exports.memberFolder = function(user)
+module.exports.setUserValue = function(user, valueName, value)
 {
-    let folder = `./Users/${user.id}`;
-
-    if(!fs.existsSync(folder))
+    if(!fs.existsSync(USER_VALUE_PATH))
     {
-        fs.mkdirSync(folder);
+        fs.writeFileSync(USER_VALUE_PATH, '{}');
     }
 
-    return folder;
+    let userData = JSON.parse(fs.readFileSync(USER_VALUE_PATH));
+    let values = userData[user.id] || {};
+
+    values[valueName] = value;
+
+    userData[user.id] = values;
+
+    fs.writeFileSync(USER_VALUE_PATH, JSON.stringify(userData, null, 4));
+};
+
+module.exports.getUserValue = function(user, valueName)
+{
+    if(!fs.existsSync(USER_VALUE_PATH))
+    {
+        fs.writeFileSync(USER_VALUE_PATH, '{}');
+    }
+
+    let userData = JSON.parse(fs.readFileSync(USER_VALUE_PATH));
+    let values = userData[user.id] || {};
+
+    return values[valueName];
 };
 
 module.exports.findMember = function(msg, args)
@@ -72,9 +92,9 @@ module.exports.findMember = function(msg, args)
         member = msg.guild.members.get(args[1]);
     }
     return member;
-}
+};
 
 module.exports.randInt = function(min,max)
 {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+};

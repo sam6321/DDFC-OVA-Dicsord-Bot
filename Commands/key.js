@@ -7,48 +7,32 @@ const KEY_MAX_LENGTH = 1024;
 exports.description = "Provide an encryption key to encrypt messages with.";
 exports.usage = "(prefix)key (your key here)";
 
-module.exports = function (bot, msg, args)
+exports.call = function (bot, msg, args)
 {
     if(msg.channel.type !== "dm")
     {
-        msg.channel.send("I suggest you provide your key to me over DM, to keep your key secret.");
+        msg.channel.send("I suggest you only perform key commands over DM.");
     }
 
-    let memberFolder = funcs.memberFolder(msg.author);
-    let key = args[1];
-
-    if(!memberFolder)
-    {
-        // Silently return if we can't find their local folder for some reason.
-        return;
-    }
+    let key = args.slice(1).join(' ');
 
     if(!key || !key.length)
     {
-        msg.channel.send("Please provide an actual key.");
-        return;
+        // We're just printing out the key, I guess.
+        key = funcs.getUserValue(msg.author, 'encrypt-key');
+        msg.channel.send(`Your key is: ${key}`);
     }
-
-    if(key.length > KEY_MAX_LENGTH)
+    else if ((key.length % 3) !== 0)
     {
-        // Can't let people store too much.
-        key = key.slice(0, KEY_MAX_LENGTH);
+        msg.channel.send("Key length must be a multiple of 3.");
     }
-
-    let userKeyPath = path.join(memberFolder, `encrypt_key.json`);
-
-    let keyJson = {
-        key: key
-    };
-
-    fs.writeFile(userKeyPath, JSON.stringify(keyJson), e => {
-        if(!e)
-        {
-            msg.channel.send(`Your key has been set to ${key}.`);
-        }
-        else
-        {
-            console.log(`key: Error setting key for ${msg.author.tag}`);
-        }
-    });
+    else if (key.length > KEY_MAX_LENGTH)
+    {
+        msg.channel.send("Key too big.");
+    }
+    else
+    {
+        funcs.setUserValue(msg.author, 'encrypt-key', key);
+        msg.channel.send(`Your key has been set to ${key}.`);
+    }
 };
