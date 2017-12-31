@@ -10,7 +10,7 @@ exports.call = function (bot, msg, args)
     let member = funcs.findMember(msg, args);
     if (!member)
     {
-        msg.channel.send("Couldn't find that member."+msg.content.includes("#") ? " Maybe try mentioning that user instead?" : "");
+        msg.channel.send("Couldn't find that member."+(msg.content.includes("#") ? " Maybe try mentioning that user instead?" : ""));
         return;
     }
     member.ban(args.length > 2 ? args.slice(2).join(" ") : "No reason given");
