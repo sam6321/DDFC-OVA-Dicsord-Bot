@@ -9,7 +9,6 @@ const fs = require('fs');
 const funcs = require('./funcs.js');
 const bSettings = require("./settings.json");
 
-const DEFAULT_PREFIX = "*";
 const bot = new Discord.Client();
 let commandDispatcher = new Command.Dispatcher();
 commandDispatcher.addDirectory('./Commands'); // Add all commands from this directory in to the dispatcher.
@@ -50,12 +49,12 @@ messageHandlers.group = function (msg)
 {
     // Just use whatever the default prefix is for group chats.
     // This bot will probably never be in group chat anyway.
-    if(!msg.content.startsWith(DEFAULT_PREFIX))
+    if(!msg.content.startsWith(bSettings.prefix))
     {
         return;
     }
 
-    let args = msg.content.slice(DEFAULT_PREFIX.length).split(' ');
+    let args = msg.content.slice(bSettings.prefix.length).split(' ');
     commandDispatcher.dispatch(args[0], bot, msg, args);
 };
 
@@ -70,7 +69,7 @@ bot.on('ready', () =>
 {
     console.log("Bot is ready.");
     console.log(`Logged in as ${bot.user.tag}.`);
-    bot.user.setGame("Type "+bSettings.prefix+"help to get started");
+    bot.user.setGame(`Type ${bSettings.prefix}help to get started.`);
 });
 
 bot.on('guildCreate', (guild) =>
