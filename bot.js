@@ -9,11 +9,62 @@ const fs = require('fs');
 const funcs = require('./funcs.js');
 const bSettings = require("./settings.json");
 
+const DEFAULT_PREFIX = "*";
 const bot = new Discord.Client();
 let commandDispatcher = new Command.Dispatcher();
+commandDispatcher.addDirectory('./Commands'); // Add all commands from this directory in to the dispatcher.
 
-// Add all commands from this directory in to the dispatcher.
-commandDispatcher.addDirectory('./Commands');
+let messageHandlers = {};
+
+// Handle a guild text channel message.
+messageHandlers.text = function (msg)
+{
+    let guild_settings = funcs.guildSettings(msg.guild);
+
+    if (!msg.content.startsWith(guild_settings.prefix))
+    {
+        return;
+    }
+
+    // Ignore the prefix, and split args in to words.
+    let args = msg.content.slice(guild_settings.prefix.length).split(' ');
+
+    if (guild_settings.disabled[args[0].toLowerCase()])
+    {
+        return; //return if the command is disabled in the guild
+    }
+
+    commandDispatcher.dispatch(args[0], bot, msg, args);
+};
+
+// Handle a direct message.
+messageHandlers.dm = function (msg)
+{
+    // No prefix in DM
+    let args = msg.content.split(' ');
+    commandDispatcher.dispatch(args[0], bot, msg, args);
+};
+
+// Handle a group chat message.
+messageHandlers.group = function (msg)
+{
+    // Just use whatever the default prefix is for group chats.
+    // This bot will probably never be in group chat anyway.
+    if(!msg.content.startsWith(DEFAULT_PREFIX))
+    {
+        return;
+    }
+
+    let args = msg.content.slice(DEFAULT_PREFIX.length).split(' ');
+    commandDispatcher.dispatch(args[0], bot, msg, args);
+};
+
+// Handle a voice chat message?
+messageHandlers.voice = function (msg)
+{
+    console.log("Weird attempt to handle text response in voice channel.");
+};
+
 
 bot.on('ready', () =>
 {
@@ -38,41 +89,34 @@ bot.on('guildMemberAdd', (member) =>
 
 bot.on('message', (msg) =>
 {
+    if(msg.author === bot.user)
+    {
+        return; // Never respond to ourself.
+    }
+
+    let handler = messageHandlers[msg.channel.type];
+
+    if(!handler)
+    {
+        console.log("Unknown message type. Local API version might be out of date.");
+        return;
+    }
+
     try
     {
-        let guild_settings = require(funcs.guildfolder(msg.guild) + "/settings.json");
-
-        if (!msg.content.startsWith(guild_settings.prefix))
-        {
-            return;
-        }
-
-        // Ignore the prefix, and split args in to words.
-        let args = msg.content.slice(guild_settings.prefix.length).split(' ');
-
-        if (guild_settings.disabled[args[0].toLowerCase()])
-        {
-            return; //return if the command is disabled in the guild
-        }
-            try
-            {
-                // Dispatch the command to the specified function.
-                commandDispatcher.dispatch(args[0], bot, msg, args);
-            }
-            catch(err)
-            {
-                let date = new Date();
-                let id = funcs.randInt(0, 999999999999);
-                msg.channel.send("Whoops! Something went wrong executing your command. This has been logged. ID: "+id);
-                let report = "\n-Error occured in "+msg.guild.name+", at "+date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear()+" with ID: "+id+"-\n"+err;
-                fs.appendFile("./log.txt", report + "\n");
-                console.error(err);
-            }
+        handler(msg);
     }
     catch(err)
     {
-        // Internal error, don't report to the user
-        console.log(`main: An internal exception occurred processing message: ${msg.content}.`);
+        let id = funcs.randInt(0, 999999999999);
+        let guild = msg.guild ? msg.guild.name : "DM";
+        let date = new Date();
+        let dateString = `${date.getDate()} / ${date.getMonth()} / ${date.getFullYear()}`;
+        let report = `\n-Error occured in ${guild}, at ${dateString} with ID: ${id}-\n${err}\n`;
+
+        msg.channel.send(`Whoops! Something went wrong executing your command. This has been logged. ID: ${id}`);
+
+        fs.appendFile("./log.txt", report);
         console.error(err);
     }
 });

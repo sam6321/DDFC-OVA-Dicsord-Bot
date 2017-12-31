@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const bSettings = require("./settings.json");
 
 const USER_VALUE_PATH = './user_values.json';
@@ -6,13 +7,14 @@ const USER_VALUE_PATH = './user_values.json';
 module.exports.guildfolder = function (guild)
 {
     let textChannel = guild.channels.find('type', 'text');
+    let guildPath = `./Guilds/${guild.id}/`;
 
     if(!textChannel)
     {
         console.error(`funcs: Guild ${guild.name} does not have a text channel!`);
     }
 
-    var init_settings = 
+    const init_settings =
     {
         banned_users    :   [],
         custom_commands :   [],
@@ -25,15 +27,21 @@ module.exports.guildfolder = function (guild)
         disabled        :   []
     };
 
-    if (fs.existsSync("./Guilds/"+guild.id))
+    if (!fs.existsSync(guildPath))
     {
-        return "./Guilds/"+guild.id;
+        console.log(`Creating initial folder for guild: ${guild.name}`);
+
+        fs.mkdirSync(guildPath);
+        fs.writeFileSync(path.join(guildPath, "settings.json"), JSON.stringify(init_settings, null, 4));
     }
-    else
-    {
-        fs.mkdirSync("./Guilds/"+guild.id);
-        fs.writeFileSync("./Guilds/"+guild.id+"/settings.json",JSON.stringify(init_settings,null,4));
-    }
+
+    return guildPath;
+};
+
+module.exports.guildSettings = function (guild)
+{
+    let folder = module.exports.guildfolder(guild);
+    return JSON.parse(fs.readFileSync(`${folder}/settings.json`));
 };
 
 module.exports.setUserValue = function(user, valueName, value)

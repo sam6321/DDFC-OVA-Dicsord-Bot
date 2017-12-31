@@ -8,7 +8,11 @@ exports.call = function (bot, msg, args)
     let author = msg.author;
     let channel = msg.channel;
 
-    msg.delete();
+    // Can't delete DM messages.
+    if(msg.guild)
+    {
+        msg.delete();
+    }
 
     let text = encryption('encrypt', author, channel, args);
 

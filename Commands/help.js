@@ -8,7 +8,18 @@ exports.usage = "(prefix)help";
 exports.call = function (bot, msg, args)
 {
     let embed = new Discord.RichEmbed().setTitle("Command List");
-    let desc = "**The prefix for this server is "+require("."+funcs.guildfolder(msg.guild)+"/settings.json").prefix+"**\n\n";
+    let desc;
+
+    if(msg.guild)
+    {
+        let guild_settings = funcs.guildSettings(msg.guild);
+        desc = `**The prefix for this server is ${guild_settings.prefix}**\n\n`;
+    }
+    else
+    {
+        desc = `**DM Channel requires no prefix**\n\n`;
+    }
+
     fs.readdir("./Commands", (err, files) => 
     {
         files.forEach(file => 
@@ -16,10 +27,8 @@ exports.call = function (bot, msg, args)
             let filename = file.substr(0, file.length - 3);
             let m = require(`./${file}`);
             desc += `__***${filename}**__\n${m.description}\n__Usage:__ ${m.usage}\n\n`;
-
-            console.log(m.description);
         });
-        
+
         embed.setDescription(desc);
         msg.channel.send({embed});
     });

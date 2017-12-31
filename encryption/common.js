@@ -11,26 +11,21 @@ module.exports = function (action, user, channel, args)
     let text = args.slice(2).join('');
     let key = funcs.getUserValue(user, 'encrypt-key');
 
-    if (args.length < 2)
+    if (!key)
+    {
+        channel.send("You have not set your key. Please use the 'key' command to set it.");
+    }
+    else if (args.length < 2)
     {
         channel.send("You must provide me with a cipher name.");
-    }
-    else if (args.length < 3)
-    {
-        channel.send(`You must provide me with text to ${action}.`);
     }
     else if (!cipher)
     {
         channel.send(`Invalid cipher ${args[1]}`);
     }
-    else if (!text)
+    else if (args.length < 3)
     {
-        // Shouldn't happen, but just in case.
         channel.send(`You must provide me with text to ${action}.`);
-    }
-    else if (!key)
-    {
-        channel.send("You have not set your key. Please use the key command to set it.");
     }
     else
     {
