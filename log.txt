@@ -38,3 +38,6 @@ Error: Cannot find module './Guilds/396507932142862338/settings.json'
 
 -Error occured in DDFC OVA Bot Test Server, at 31/11/2017 with ID: 414628986950-
 Error: ENOENT: no such file or directory, open 'C:\Users\Paulr\OneDrive\Documents\Programming\Guilds\396507932142862338\settings.json'
+
+-Error occured in DDFC OVA Bot Test Server, at 31/11/2017 with ID: 381373290533-
+TypeError: Cannot read property 'constructor' of null
