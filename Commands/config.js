@@ -18,7 +18,7 @@ exports.call = function (bot, msg, args)
     {
         if (args[2] === "disabled" && BLACKLIST.includes(args[3]))
         {
-            msg.channel.send("That setting cannot be added to the disabled list.");
+            msg.channel.send("You're not allowed to disable that command.");
             return;
         }
 
@@ -64,7 +64,7 @@ exports.call = function (bot, msg, args)
 
             if (newValue.some(item => BLACKLIST.includes(item)))
             {
-                msg.channel.send("Can't add blacklisted items to the disabled list.");
+                msg.channel.send("You tried to add a blacklisted item in that array.\nBlacklisted items: " + BACKLIST.slice(0).join(", "));
                 return;
             }
 
