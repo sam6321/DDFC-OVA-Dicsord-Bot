@@ -11,7 +11,7 @@ exports.call = function (bot, msg, args)
     let embed = new Discord.RichEmbed().setTitle("Command List");
     if(msg.guild)
     {
-        let guild_settings = funcs.guildSettings(msg.guild);
+        var guild_settings = funcs.guildSettings(msg.guild);
         desc = `**The prefix for this server is ${guild_settings.prefix}**\n\n`;
     }
     else
@@ -28,14 +28,13 @@ exports.call = function (bot, msg, args)
             moderation : "",
             music : ""
         };
-        
+
         files.forEach(file => 
         {
             let filename = file.substr(0, file.length - 3);
             let m = require(`./${file}`);
-            desc[m.category] += "__***" + filename + "**__\n" + m.description + "\n__Usage:__ " + m.usage + "\n\n";
+            desc[m.category] += "__" + guild_settings.prefix + filename + "__\n" + m.description + "\nUsage: " + m.usage + "\n\n";
         });
-        console.log(desc.misc);
         embed.addField("Miscellaneous", desc.misc);
         embed.addField("Moderation", desc.moderation);
         embed.addField("Administration", desc.administration);
