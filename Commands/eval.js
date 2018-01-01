@@ -14,15 +14,12 @@ exports.call = function (bot, msg, args)
     {
     	return;
     }
-    else
+   	try
+   	{
+        eval(args.slice(1).join(" "));
+    }
+    catch(err)
     {
-    	try
-    	{
-            eval(args.slice(1).join(" "));
-    	}
-    	catch(err)
-    	{
-            console.log(err);
-    	}
+        console.log(err);
     }
 }
