@@ -2,6 +2,8 @@ const fs = require('fs');
 const Discord = require('discord.js');
 var funcs = require("../funcs.js");
 
+const BLACKLIST = ["enable", "disable", "config"];
+
 exports.description = "Update or display a guild config setting(s). Add and remove are used for lists/arrays only.";
 exports.info = module.exports.description;
 exports.usage = "(prefix)config (display/set/add/remove) (config name) (value/undefined)";
@@ -14,7 +16,13 @@ exports.call = function (bot, msg, args)
     let embed = new Discord.RichEmbed();
     if (args[1].toLowerCase() == "add")
     {
-        if (guild_settings[args[2]].constructor != Array)
+        if (args[2] === "disabled" && BLACKLIST.includes(args[3]))
+        {
+            msg.channel.send("You're not allowed to disable that command.");
+            return;
+        }
+
+        if (Array.isArray(guild_settings[args[2]]))
         {
             msg.channel.send("Add should only be used to add items to pre-existing arrays. Create an array with "+guild_settings.prefix+"config set (config name) []");
             return;
@@ -45,13 +53,23 @@ exports.call = function (bot, msg, args)
             msg.channel.send("You didn't give me a new value! If you wish to delete a config, ask me to set it to undefined. If you wish you to create an empty config, ask me to set it to null.");
             return;
         }
+
         if (!guild_settings[args[2]])
         {
             msg.channel.send(args[2]+" doesn't exist, but I'll create it for you anyways.");
         }
         if (args[3].startsWith("["))
         {
-        	guild_settings[args[2]] = JSON.parse(args.slice(3).join(" "));
+            let newValue = JSON.parse(args.slice(3).join(" "));
+
+            if (newValue.some(item => BLACKLIST.includes(item)))
+            {
+                msg.channel.send("You tried to add a blacklisted item in that array.\nBlacklisted items: " + BACKLIST.slice(0).join(", "));
+                return;
+            }
+
+        	guild_settings[args[2]] = newValue;
+
         	msg.channel.send("Set config "+args[2]+" to "+guild_settings[args[2]].toString());
         }
         else

@@ -131,3 +131,27 @@ module.exports.randInt = function(min,max)
 {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+/**
+ * Pick a random item out of the provided array.
+ * @param array - The array to pick the item from.
+ * @returns {*} - An item from the array, or undefined.
+ */
+module.exports.sample = function (array)
+{
+    return array[Math.floor(Math.random() * array.length)];
+};
+
+/**
+ * Map a value, x, in the range a1, a2 to an equivalent value in the range b1, b2
+ * @param x - The value to map.
+ * @param a1 - Lower bound of the current range.
+ * @param a2 - Upper bound of the current range.
+ * @param b1 - Lower bound of the new range.
+ * @param b2 - Upper bound of the new range.
+ * @returns {*} - Value mapped too the new range.
+ */
+module.exports.mapLinear = function ( x, a1, a2, b1, b2 )
+{
+    return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );
+};
