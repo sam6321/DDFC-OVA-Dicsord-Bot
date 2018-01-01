@@ -98,6 +98,39 @@ module.exports.parseString = function(string)
             }
     }
 }
+module.exports.mentiontoID = function(string, members)
+{
+    if (string.startsWith("<"))
+    {
+        return string.substr(2,20);
+    }
+    if (args[1].includes("#"))
+    {
+        let iter = members.entries();
+        for (let i=0;i<members.size;i++)
+        {
+            let M = iter.next().value;
+            if (M[1].user.tag == args[1])
+            {
+                return M[1].id;
+            }
+        }
+    }
+    return string;
+
+}
+module.exports.IDtoString = function(string, guild)
+{
+    if (guild.members.get(string) != undefined)
+    {
+        return guild.members.get(string).user.tag;
+    }
+    if (guild.channels.get(string) != undefined)
+    {
+        return guild.channels.get(string).name;
+    }
+    return 'invalid_id';
+}
 
 module.exports.findMember = function(msg, args)
 {
@@ -112,7 +145,6 @@ module.exports.findMember = function(msg, args)
         for (let i=0;i<msg.guild.members.size;i++)
         {
             let M = iter.next().value;
-            console.log(M);
             if (M[1].user.tag == args[1])
             {
                 member = M[1];
