@@ -1,7 +1,7 @@
 var funcs = require("../funcs.js");
 
 exports.description = "Disables a command. Shorthand for (prefix)config add disabled (command)."
-exports.usage = "(prefix)disable (command)";
+exports.usage = "*disable (command)";
 exports.info = module.exports.description;
 exports.category = "administration";
 

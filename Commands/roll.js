@@ -2,7 +2,7 @@ var funcs = require("../funcs.js");
 
 exports.description = "Rolls a die (or a coin!).";
 exports.info = module.exports.description;
-exports.usage = "(prefix)roll (number of sides)";
+exports.usage = "*roll (number of sides)";
 exports.category = "misc";
 
 exports.call = function (bot, msg, args)

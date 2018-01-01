@@ -4,7 +4,7 @@ var funcs = require("../funcs.js");
 
 exports.description = "Softban a user. Deletes all of their messages, but they can still rejoin.";
 exports.info = module.exports.description;
-exports.usage = "(prefix)softban (mention/id/username+tag) (reason)";
+exports.usage = "*softban (mention/id/username+tag) (reason)";
 exports.category = "moderation";
 
 exports.call = function (bot, msg, args)
