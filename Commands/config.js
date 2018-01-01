@@ -64,7 +64,7 @@ exports.call = function (bot, msg, args)
 
             if (newValue.some(item => BLACKLIST.includes(item)))
             {
-                msg.channel.send("Can't add blacklisted items to the disbaled list.");
+                msg.channel.send("Can't add blacklisted items to the disabled list.");
                 return;
             }
 
