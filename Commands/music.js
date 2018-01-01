@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 exports.description = "Play a music file. Currently just from a local directory.";
+exports.info = module.exports.description;
 exports.usage = "(prefix)music (file)";
 exports.category = "music";
 

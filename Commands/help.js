@@ -3,7 +3,8 @@ const Discord = require('discord.js');
 var funcs = require('../funcs.js');
 
 exports.description = "Recieve a list of commands.";
-exports.usage = "(prefix)help";
+exports.info = module.exports.description;
+exports.usage = "(prefix)help (blank/command name)";
 exports.category = "misc";
 
 exports.call = function (bot, msg, args)
@@ -17,6 +18,20 @@ exports.call = function (bot, msg, args)
     else
     {
         desc = `**DM Channel requires no prefix**\n\n`;
+    }
+
+    if (args[1] != undefined)
+    {
+        if (!fs.existsSync("./Commands/" + args[1] + ".js"))
+        {
+            msg.channel.send("I can't find any command called "+args[1]);
+            return;
+        }
+        let m = require("../Commands/" + args[1] + ".js");
+        embed.setTitle(guild_settings.prefix+args[1]);
+        embed.setDescription(m.info + "\n__Usage:__ " + m.usage + "\n\n");
+        msg.channel.send({embed});
+        return;
     }
 
     fs.readdir("./Commands", (err, files) => 
@@ -33,7 +48,7 @@ exports.call = function (bot, msg, args)
         {
             let filename = file.substr(0, file.length - 3);
             let m = require(`./${file}`);
-            desc[m.category] += "__" + guild_settings.prefix + filename + "__\n" + m.description + "\nUsage: " + m.usage + "\n\n";
+            desc[m.category] += "__" + guild_settings.prefix + filename + "__\n" + m.description + "\n\n";
         });
         embed.addField("Miscellaneous", desc.misc);
         embed.addField("Moderation", desc.moderation);

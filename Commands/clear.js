@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 var funcs = require("../funcs.js");
 
 exports.description = "Clears an amount of messages.";
+exports.info = "Clears an amount of messages with the paramater of 'any', 'bots', or 'users'. Any will remove all types of messages, while bots and users deletes messages sent by certain types of accounts.";
 exports.usage = "(prefix)clear (number of messages) (any/bots/users)";
 exports.category = "moderation";
 

@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 var funcs = require("../funcs.js");
 
 exports.description = "Kick a user.";
+exports.info = module.exports.description;
 exports.usage = "(prefix)kick (mention/id/username+tag) (reason)";
 exports.category = "moderation";
 

@@ -5,6 +5,7 @@ var funcs = require("../funcs.js");
 const KEY_MAX_LENGTH = 1024;
 
 exports.description = "Provide an encryption key to encrypt messages with.";
+exports.info = module.exports.description;
 exports.usage = "(prefix)key (your key here)";
 exports.category = "misc";
 
