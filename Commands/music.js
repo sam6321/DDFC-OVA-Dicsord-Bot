@@ -3,6 +3,7 @@ const path = require("path");
 
 exports.description = "Play a music file. Currently just from a local directory.";
 exports.usage = "(prefix)music (file)";
+exports.category = "music";
 
 const AUDIO_PATH = "./music";
 let playing = false;

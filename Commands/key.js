@@ -6,6 +6,7 @@ const KEY_MAX_LENGTH = 1024;
 
 exports.description = "Provide an encryption key to encrypt messages with.";
 exports.usage = "(prefix)key (your key here)";
+exports.category = "misc";
 
 exports.call = function (bot, msg, args)
 {

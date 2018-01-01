@@ -4,6 +4,7 @@ var funcs = require("../funcs.js");
 
 exports.description = "Update or display a guild config setting(s). Add and remove are used for lists/arrays only.";
 exports.usage = "(prefix)config (display/set/add/remove) (config name) (value/undefined)";
+exports.category = "administration";
 
 exports.call = function (bot, msg, args)
 {

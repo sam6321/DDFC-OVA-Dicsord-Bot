@@ -4,6 +4,7 @@ var funcs = require("../funcs.js");
 
 exports.description = "Clears an amount of messages.";
 exports.usage = "(prefix)clear (number of messages) (any/bots/users)";
+exports.category = "moderation";
 
 exports.call = function (bot, msg, args)
 {

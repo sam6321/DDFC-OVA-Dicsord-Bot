@@ -4,6 +4,7 @@ var funcs = require("../funcs.js");
 
 exports.description = "Ban a user.";
 exports.usage = "(prefix)ban (mention/id/username+tag) (reason)";
+exports.category = "moderation";
 
 exports.call = function (bot, msg, args)
 {

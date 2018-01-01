@@ -1,6 +1,8 @@
 var funcs = require("../funcs.js");
 
 exports.description = "Magic 8 ball."
+exports.usage = "(prefix)8ball (question)";
+exports.category = "misc";
 
 exports.call = function (bot, msg, args)
 {

@@ -4,6 +4,7 @@ var funcs = require('../funcs.js');
 
 exports.description = "Recieve a list of commands.";
 exports.usage = "(prefix)help";
+exports.category = "misc";
 
 exports.call = function (bot, msg, args)
 {

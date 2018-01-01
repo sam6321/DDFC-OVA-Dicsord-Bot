@@ -2,6 +2,7 @@ var funcs = require('../funcs.js');
 
 exports.description = "Say hello!";
 exports.usage = "(prefix)hello";
+exports.category = "misc";
 
 exports.call = function (bot, msg, args)
 {
