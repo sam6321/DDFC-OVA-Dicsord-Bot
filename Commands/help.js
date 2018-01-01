@@ -9,8 +9,6 @@ exports.category = "misc";
 exports.call = function (bot, msg, args)
 {
     let embed = new Discord.RichEmbed().setTitle("Command List");
-    let desc;
-
     if(msg.guild)
     {
         let guild_settings = funcs.guildSettings(msg.guild);
@@ -23,14 +21,26 @@ exports.call = function (bot, msg, args)
 
     fs.readdir("./Commands", (err, files) => 
     {
+        let desc = 
+        {
+            misc : "",
+            administration : "",
+            moderation : "",
+            music : ""
+        };
+        
         files.forEach(file => 
         {
             let filename = file.substr(0, file.length - 3);
             let m = require(`./${file}`);
-            desc += `__***${filename}**__\n${m.description}\n__Usage:__ ${m.usage}\n\n`;
+            desc[m.category] += "__***" + filename + "**__\n" + m.description + "\n__Usage:__ " + m.usage + "\n\n";
         });
+        console.log(desc.misc);
+        embed.addField("Miscellaneous", desc.misc);
+        embed.addField("Moderation", desc.moderation);
+        embed.addField("Administration", desc.administration);
+        embed.addField("Music", desc.music);
 
-        embed.setDescription(desc);
         msg.channel.send({embed});
     });
 };
