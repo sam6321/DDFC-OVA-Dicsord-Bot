@@ -28,7 +28,7 @@ messageHandlers.text = function (msg)
     // Ignore the prefix, and split args in to words.
     let args = msg.content.slice(guild_settings.prefix.length).split(' ');
 
-    if (guild_settings.disabled[args[0].toLowerCase()])
+    if (guild_settings.disabled.includes(args[0].toLowerCase()))
     {
         return; //return if the command is disabled in the guild
     }
