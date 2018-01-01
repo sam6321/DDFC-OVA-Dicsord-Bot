@@ -2,7 +2,7 @@ const funcs = require("../funcs.js");
 
 exports.description = "Generate almond milk";
 exports.info = module.exports.description;
-exports.usage = "(prefix)tap (number of cups)";
+exports.usage = "*tap (number of cups)";
 exports.category = "misc";
 
 const responses = [
