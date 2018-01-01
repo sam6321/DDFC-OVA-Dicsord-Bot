@@ -22,7 +22,7 @@ exports.call = function (bot, msg, args)
             return;
         }
 
-        if (guild_settings[args[2]].constructor != Array)
+        if (Array.isArray(guild_settings[args[2]]))
         {
             msg.channel.send("Add should only be used to add items to pre-existing arrays. Create an array with "+guild_settings.prefix+"config set (config name) []");
             return;
