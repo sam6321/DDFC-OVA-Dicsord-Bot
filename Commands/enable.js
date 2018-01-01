@@ -7,6 +7,6 @@ exports.category = "administration";
 
 exports.call = function (bot, msg, args)
 {
-    let config = require("./Commands/config.js");
+    let config = require("../Commands/config.js");
     config.call(bot, msg, ["config","remove","disabled",args[1]]);
 }
