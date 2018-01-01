@@ -4,7 +4,7 @@ var funcs = require('../funcs.js');
 
 exports.description = "Recieve a list of commands.";
 exports.info = module.exports.description;
-exports.usage = "(prefix)help (blank/command name)";
+exports.usage = "(prefix)help (blank/compact/command name)";
 exports.category = "misc";
 
 exports.call = function (bot, msg, args)
@@ -22,39 +22,59 @@ exports.call = function (bot, msg, args)
 
     if (args[1] != undefined)
     {
-        if (!fs.existsSync("./Commands/" + args[1] + ".js"))
+        if (args[1] == "compact")
         {
-            msg.channel.send("I can't find any command called "+args[1]);
+            fs.readdir("./Commands", (err, files) => 
+            {
+                let desc = '';
+                files.forEach(file => 
+                {
+                    let filename = file.substr(0, file.length - 3);
+                    let m = require(`./${file}`);
+                    desc += "__" + guild_settings.prefix + filename + "__: " + m.description + "\n";
+                });
+                embed.setDescription(desc);
+                msg.channel.send({embed});
+                return;
+            });
+        }
+        else if (!fs.existsSync("./Commands/" + args[1] + ".js"))
+        {
+            {
+                msg.channel.send("I can't find any command called "+args[1]);
+                return;
+            }
+            let m = require("../Commands/" + args[1] + ".js");
+            embed.setTitle(guild_settings.prefix+args[1]);
+            embed.setDescription(m.info + "\n__Usage:__ " + m.usage + "\n\n");
+            msg.channel.send({embed});
             return;
         }
-        let m = require("../Commands/" + args[1] + ".js");
-        embed.setTitle(guild_settings.prefix+args[1]);
-        embed.setDescription(m.info + "\n__Usage:__ " + m.usage + "\n\n");
-        msg.channel.send({embed});
-        return;
     }
-
-    fs.readdir("./Commands", (err, files) => 
+    else
     {
-        let desc = 
+        fs.readdir("./Commands", (err, files) => 
         {
-            misc : "",
-            administration : "",
-            moderation : "",
-            music : ""
-        };
+            let desc = 
+            {
+                misc : "",
+                administration : "",
+                moderation : "",
+                music : ""
+            };
 
-        files.forEach(file => 
-        {
-            let filename = file.substr(0, file.length - 3);
-            let m = require(`./${file}`);
-            desc[m.category] += "__" + guild_settings.prefix + filename + "__\n" + m.description + "\n\n";
+            files.forEach(file => 
+            {
+                let filename = file.substr(0, file.length - 3);
+                let m = require(`./${file}`);
+                desc[m.category] += "__" + guild_settings.prefix + filename + "__\n" + m.description + "\n\n";
+            });
+            embed.addField("Miscellaneous", desc.misc);
+            embed.addField("Moderation", desc.moderation);
+            embed.addField("Administration", desc.administration);
+            embed.addField("Music", desc.music);
+
+            msg.channel.send({embed});
         });
-        embed.addField("Miscellaneous", desc.misc);
-        embed.addField("Moderation", desc.moderation);
-        embed.addField("Administration", desc.administration);
-        embed.addField("Music", desc.music);
-
-        msg.channel.send({embed});
-    });
+    }
 };
