@@ -151,7 +151,18 @@ module.exports.sample = function (array)
  * @param b2 - Upper bound of the new range.
  * @returns {*} - Value mapped too the new range.
  */
-module.exports.mapLinear = function ( x, a1, a2, b1, b2 )
+module.exports.mapLinear = function (x, a1, a2, b1, b2)
 {
     return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );
+};
+
+module.exports.formatTime = function (inSeconds)
+{
+    let minutes = Math.floor(inSeconds / 60);
+    let hours = Math.floor(minutes / 60);
+    let seconds = inSeconds % 60;
+
+    minutes %= 60;
+
+    return hours + ":" + ('0' + minutes.toFixed(0)).slice(-2) + ":" + ('0' + seconds.toFixed(0)).slice(-2);
 };
