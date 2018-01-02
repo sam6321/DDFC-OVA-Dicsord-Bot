@@ -64,6 +64,19 @@ messageHandlers.voice = function (msg)
     console.log("Weird attempt to handle text response in voice channel.");
 };
 
+bot.on("guildMemberAdd", member => {
+    let guild_settings = funcs.guildSettings(member.guild);
+    let channel = member.guild.channels.get(guild_settings.greet_channel);
+
+    channel.send("Welcome to the server " + member.tag + ". We hope you enjoy yourself!");
+});
+
+bot.on("guildMemberRemove", member => {
+    let guild_settings = funcs.guildSettings(member.guild);
+    let channel = member.guild.channels.get(guild_settings.greet_channel);
+
+    channel.send("Goodbye " + member.tag + ". We hope you enjoyed your time here!");
+});
 
 bot.on('ready', () =>
 {
