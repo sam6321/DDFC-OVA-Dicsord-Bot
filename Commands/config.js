@@ -4,9 +4,9 @@ var funcs = require("../funcs.js");
 
 const BLACKLIST = ["enable", "disable", "config"];
 
-exports.description = "Update or display a guild config setting(s). Add and remove are used for lists/arrays only.";
-exports.info = module.exports.description;
-exports.usage = "(prefix)config (display/set/add/remove) (config name) (value/undefined)";
+exports.description = "Update or display a server config setting(s). Add and remove are used for lists/arrays only.";
+exports.info = "Used to modify, create, or delete any server setting (with exceptions).\nTyping '*config display' will give you a list of existing configs and their values.\nSet, add, and remove are three different actions you can make. examples:\n*config set greet false\n*config add banned_users 234642241564442625\n*config remove banned_users 234642241564442625\nSetting a config to undefined will delete that config. It's possible to set arrays by formatting them as such: [item1,item2,item3].\nShorthand commands such as *disable and *enable will do the same thing as this command, but only modify certain configs.\nUsers/channels are represented by their IDs in banned_users, admins, greet_channel, etc. Type '*config display readable' to replace these with the user/channel name. Setting/adding/removing a mention will automatically be turned into an ID.";
+exports.usage = "*config (display/set/add/remove) (config name) (value/undefined)";
 exports.category = "administration";
 
 exports.call = function (bot, msg, args)
@@ -18,7 +18,7 @@ exports.call = function (bot, msg, args)
     {
         if (args[2] === "disabled" && BLACKLIST.includes(args[3]))
         {
-            msg.channel.send("That setting cannot be added to the disabled list.");
+            msg.channel.send("You're not allowed to disable that command.");
             return;
         }
 
@@ -64,7 +64,7 @@ exports.call = function (bot, msg, args)
 
             if (newValue.some(item => BLACKLIST.includes(item)))
             {
-                msg.channel.send("Can't add blacklisted items to the disabled list.");
+                msg.channel.send("You tried to add a blacklisted item in that array.\nBlacklisted items: " + BACKLIST.slice(0).join(", "));
                 return;
             }
 

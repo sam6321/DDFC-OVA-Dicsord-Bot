@@ -1,7 +1,7 @@
 var funcs = require("../funcs.js");
 
 exports.description = "Magic 8 ball."
-exports.usage = "(prefix)8ball (question)";
+exports.usage = "*8ball (question)";
 exports.info = module.exports.description;
 exports.category = "misc";
 

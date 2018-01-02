@@ -3,7 +3,7 @@ const MusicContext = require("../music/context.js");
 // TODO: Update description.
 exports.description = "Play a music file. Currently just from a local directory.";
 exports.info = module.exports.description;
-exports.usage = "(prefix)music (file)";
+exports.usage = "*music (file)";
 exports.category = "music";
 
 let contexts = {};

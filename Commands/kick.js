@@ -4,7 +4,7 @@ var funcs = require("../funcs.js");
 
 exports.description = "Kick a user.";
 exports.info = module.exports.description;
-exports.usage = "(prefix)kick (mention/id/username+tag) (reason)";
+exports.usage = "*kick (mention/id/username+tag) (reason)";
 exports.category = "moderation";
 
 exports.call = function (bot, msg, args)
