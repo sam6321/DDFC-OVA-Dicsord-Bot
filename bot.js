@@ -20,7 +20,7 @@ messageHandlers.text = function (msg)
 {
     let guild_settings = funcs.guildSettings(msg.guild);
 
-    if (!msg.content.startsWith(guild_settings.prefix))
+    if (!msg.content.startsWith(guild_settings.prefix) && !msg.content.startsWith(`${bSettings.prefix}help`))
     {
         return;
     }
