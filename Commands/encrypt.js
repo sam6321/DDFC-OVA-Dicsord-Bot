@@ -1,3 +1,4 @@
+const Discord = require("discord.js");
 const encryption = require('../encryption/common.js');
 
 exports.description = "Encrypt a message with your private key. Provide a key using the 'key' command. Available ciphers: prng, xor.";
@@ -20,6 +21,10 @@ exports.call = function (bot, msg, args)
 
     if(text)
     {
-        channel.send(`Your encrypted message is: ${text}`);
+        let embed = new Discord.RichEmbed();
+        embed.setTitle("Your encrypted message is:");
+        embed.setDescription(text);
+
+        channel.send({embed});
     }
 };
