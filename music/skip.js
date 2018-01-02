@@ -46,6 +46,7 @@ class MusicSkipHandler extends EventEmitter
         let channel = this.context.channel;
         let user = msg.author;
         let id = user.id;
+        let event = "";
 
         if (!channel)
         {
@@ -61,26 +62,36 @@ class MusicSkipHandler extends EventEmitter
             }
         });
 
-        let count = this.count;
-        let required = this.required;
-        let event = {message: msg, votes: Object.values(this.skipVotes), current: count, required: required, willSkip: count >= required};
-
         if (this.skipVotes[id])
         {
             // User already voted to skip.
-            this.emit("duplicateVote", event);
+            event = "duplicateVote";
         }
         else
         {
             // User voted to skip for the first time.
             this.skipVotes[id] = user;
-            this.emit("vote", event);
+            event = "vote";
         }
 
+        let current = this.count;
+        let required = this.required;
+
+        let args = {
+            message: msg,
+            votes: Object.values(this.skipVotes),
+            current: current,
+            required: required,
+            willSkip: current >= required
+        };
+
+        // Fire off the duplicateVote / vote event.
+        this.emit(event, args);
+
         // Fire off the skip event if we have enough votes.
-        if(event.willSkip)
+        if(args.willSkip)
         {
-            this.emit("skip", event);
+            this.emit("skip", args);
         }
     }
 

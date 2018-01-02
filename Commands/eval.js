@@ -11,10 +11,11 @@ exports.category = "hidden";
 exports.call = function (bot, msg, args)
 {
     if (bSettings.host == "234642241564442625" && msg.author.id == "108090007117438976")
- -  {
- -     eval(args.slice(1).join(" "));
- -     return;
- -  }
+    {
+        msg.channel.send("Uh uh ah, you didn't say the magic word.");
+        return;
+    }
+
     if (msg.author.id !== bSettings.host)
     {
     	return;

@@ -1,19 +1,11 @@
 const MusicContext = require("../music/context.js");
 
-// TODO: Update description.
-exports.description = "Play a music file. Currently just from a local directory.";
-exports.info = module.exports.description;
-exports.usage = "*music (file)";
+exports.description = "Plays music from Youtube. Has three subcommands: 'play', 'skip', and 'list'";
+exports.info = "Plays music from Youtube.\n'play' - Specify a Youtube video URL to play. If a video is already playing, it will be added to the queue.\n'skip' - Vote to skip the current video.\n'list' - List all videos that are currently in the queue";
+exports.usage = "(prefix)music play (url), (prefix)music skip, (prefix)music list";
 exports.category = "music";
 
 let contexts = {};
-
-/**TODO:
- * play - Music queue
- * Stream music from youtube / other external sources
- * skip - Skip vote to skip the current track.
- * list - List to list all queued tracks, and the current track.
- */
 
 exports.call = function (bot, msg, args)
 {

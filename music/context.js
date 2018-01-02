@@ -18,7 +18,7 @@ function validate (msg, url)
     }
     else if (!ytdl.validateURL(url))
     {
-        msg.channel.send("You have not provided a valid youtube URL.");
+        msg.channel.send("You have not provided a valid Youtube URL.");
         return false;
     }
     else if (!msg.member.voiceChannel)
@@ -172,9 +172,15 @@ class MusicContext
      */
     skip (msg)
     {
-        if(!this.playing)
+        if (!this.playing)
         {
             msg.channel.send("Can't skip when I'm not playing anything.");
+            return;
+        }
+
+        if (!this.channel.members.has(msg.author.id))
+        {
+            msg.channel.send("You're not even in the voice channel.");
             return;
         }
 
