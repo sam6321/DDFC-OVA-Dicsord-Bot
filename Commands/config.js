@@ -22,7 +22,7 @@ exports.call = function (bot, msg, args)
             return;
         }
 
-        if (Array.isArray(guild_settings[args[2]]))
+        if (!Array.isArray(guild_settings[args[2]]))
         {
             msg.channel.send("Add should only be used to add items to pre-existing arrays. Create an array with "+guild_settings.prefix+"config set (config name) []");
             return;
@@ -32,7 +32,7 @@ exports.call = function (bot, msg, args)
     }
     else if (args[1].toLowerCase() == "remove")
     {
-        if (guild_settings[args[2]].constructor != Array)
+        if (!Array.isArray(guild_settings[args[2]]))
         {
             msg.channel.send("Remove should only be to remove items from pre-existing arrays. Create an array with "+guild_settings.prefix+"config set (config name) []");
             return;
@@ -64,7 +64,7 @@ exports.call = function (bot, msg, args)
 
             if (newValue.some(item => BLACKLIST.includes(item)))
             {
-                msg.channel.send("You tried to add a blacklisted item in that array.\nBlacklisted items: " + BACKLIST.slice(0).join(", "));
+                msg.channel.send("You tried to add a blacklisted item in that array.\nBlacklisted items: " + BLACKLIST.slice(0).join(", "));
                 return;
             }
 
@@ -86,7 +86,7 @@ exports.call = function (bot, msg, args)
     {
         for (var U in guild_settings)
         {
-        	if (guild_settings[U] != null && guild_settings[U].constructor == Array)
+        	if (guild_settings[U] != null && Array.isArray(guild_settings[U]))
         	{
         		desc += "__**"+U+"**__ : ["+guild_settings[U].toString()+"]\n";
         		continue;
