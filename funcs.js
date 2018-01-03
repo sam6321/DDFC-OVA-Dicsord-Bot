@@ -29,6 +29,7 @@ module.exports.guildfolder = function (guild)
 
     if (!fs.existsSync("./Guilds"))
     {
+        console.log("Creating Guilds directory...");
         fs.mkdir("./Guilds");
     }
 
