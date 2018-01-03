@@ -1,0 +1,4 @@
+# This is for ignoring unwanted files
+README
+LICENSE
+.gitignore

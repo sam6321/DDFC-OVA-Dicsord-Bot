@@ -1,0 +1,28 @@
+{
+  "name": "DDFC OVA Bot",
+  "description": "A bot for the DDFC OVA Discord",
+  "scripts": {
+  },
+  "env": {
+    "DISCORD_TOKEN": {
+      "required": true
+    }
+  },
+  "formation": {
+    "worker": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "papertrail",
+    "heroku-redis"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
+    }
+  ]
+}

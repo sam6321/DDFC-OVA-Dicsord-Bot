@@ -15,6 +15,7 @@
   },
   "main": "bot.js",
   "scripts": {
+    "heroku-postinstall": "npm i -g pm2",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
