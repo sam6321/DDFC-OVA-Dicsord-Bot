@@ -160,7 +160,7 @@ class MusicContext
                     this.startPlay(item);
                 })
                 .catch(e => {
-                    this.stopPlay();
+                    // Couldn't join the channel for some reason.
                     console.log("An error occurred while trying to play audio: " + e);
                 });
         }
