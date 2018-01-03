@@ -136,9 +136,7 @@ bot.on('message', (msg) =>
 if(!bSettings.token) 
 {
     console.warn("main: Token is missing from settings file. Using environment variables");
-    bSettings = {
-        token: process.env.DISCORD_TOKEN // see https://github.com/sam6321/DDFC-OVA-Discord-Bot/issues/1
-    }
+    bSettings.token = process.env.DISCORD_TOKEN // see https://github.com/sam6321/DDFC-OVA-Discord-Bot/issues/1
 
 }
  else if (process.env.TOKEN)
