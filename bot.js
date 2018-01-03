@@ -137,7 +137,7 @@ if(!bSettings.token)
 {
     console.warn("main: Token is missing from settings file. Using environment variables");
     bSettings = {
-        token: process.env.DISCORD_TOKEN; // see https://github.com/sam6321/DDFC-OVA-Discord-Bot/issues/1
+        token: process.env.DISCORD_TOKEN // see https://github.com/sam6321/DDFC-OVA-Discord-Bot/issues/1
     }
 
 }
