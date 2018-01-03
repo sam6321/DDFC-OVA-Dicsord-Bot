@@ -1,0 +1,31 @@
+{
+  "name": "OVAbot",
+  "version": "1.0.0",
+  "description": "A bot for the DDFC OVA Discord server, because Enra's bots are buggy.\r TODO: Literally everything.",
+  "engines": {
+    "node": "6.10.2"
+  },
+  "dependencies":
+  {
+    "pg": "6.x",
+    "discord.js":"11.2.1",
+    "ytdl-core":"0.18.5",
+    "opusscript":"0.0.6",
+    "seedrandom":"2.4.3"
+  },
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sam6321/DDFC-OVA-Discord-Bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sam6321/DDFC-OVA-Discord-Bot/issues"
+  },
+  "homepage": "https://github.com/sam6321/DDFC-OVA-Discord-Bot#readme"
+}
