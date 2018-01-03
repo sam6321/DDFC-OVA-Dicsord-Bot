@@ -7,7 +7,7 @@ const Discord = require('discord.js');
 const Command = require('./core/command.js');
 const fs = require('fs');
 const funcs = require('./funcs.js');
-const bSettings = require("./settings.json");
+let bSettings = require("./settings.json");
 
 const bot = new Discord.Client();
 let commandDispatcher = new Command.Dispatcher();
@@ -135,11 +135,16 @@ bot.on('message', (msg) =>
 
 if(!bSettings.token) 
 {
-    console.log("main: Token is missing from settings file. Please add token to settings.json.");
-    process.exit(1);
+    console.warn("main: Token is missing from settings file. Using environment variables");
+    bSettings = process.env.DISCORD_TOKEN; // see https://github.com/sam6321/DDFC-OVA-Discord-Bot/issues/1
 }
-else 
-{
+ else if (process.env.TOKEN)
+ {
+    console.error('Token not found from either from the settings or the environment variable.');
+    process.exit(1);
+ }
+ else 
+ {
     // All good to go.
     console.log("Available command(s): ");
     commandDispatcher.each(command => {
