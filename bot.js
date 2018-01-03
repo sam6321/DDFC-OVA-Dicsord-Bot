@@ -139,7 +139,7 @@ if(!bSettings.token)
     bSettings.token = process.env.DISCORD_TOKEN; // see https://github.com/sam6321/DDFC-OVA-Discord-Bot/issues/1
 
 }
- else if (process.env.TOKEN)
+ else if (!process.env.TOKEN)
  {
     console.error('Token not found from either from the settings or the environment variable.');
     process.exit(1);
