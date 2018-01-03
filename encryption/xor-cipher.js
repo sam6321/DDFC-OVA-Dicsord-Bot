@@ -30,8 +30,9 @@ function pad (value, align, padstr=' ')
 
 function rotr (val, r_bits, max_bits=64)
 {
-    let l = ((val & (2**max_bits - 1)) >> r_bits % max_bits);
-    let r = (val << (max_bits - (r_bits % max_bits)) & (2**max_bits - 1));
+    let p = Math.pow(2, max_bits);
+    let l = ((val & (p - 1)) >> r_bits % max_bits);
+    let r = (val << (max_bits - (r_bits % max_bits)) & (p - 1));
 
     return l | r;
 }
