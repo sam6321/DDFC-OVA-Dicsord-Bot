@@ -148,7 +148,7 @@ if(!bSettings.token)
  {
     // All good to go.
     console.log("Available command(s): ");
-    commandDispatcher.forEach(command => {
+    commandDispatcher.each(command => {
         console.log(`  ${command}`);
     });
 
