@@ -26,7 +26,7 @@ module.exports.guildfolder = function (guild)
         mod_channel     :   null,  
         disabled        :   []
     };
-    
+
     if (!fs.existsSync("./Guilds"))
     {
         fs.mkdir("./Guilds");
