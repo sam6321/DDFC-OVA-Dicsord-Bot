@@ -12,10 +12,10 @@ exports.call = function (bot, msg, args)
 {
     if (msg.author.id !== bSettings.host)
     {
-    	return;
+        return;
     }
-   	try
-   	{
+    try
+    {
         eval(args.slice(1).join(" "));
     }
     catch(err)
