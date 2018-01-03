@@ -7,7 +7,7 @@ const Discord = require('discord.js');
 const Command = require('./core/command.js');
 const fs = require('fs');
 const funcs = require('./funcs.js');
-let bSettings = require("./settings.json");
+let bSettings = require("./core/config.js")();
 
 const bot = new Discord.Client();
 let commandDispatcher = new Command.Dispatcher();
@@ -132,20 +132,6 @@ bot.on('message', (msg) =>
         console.error(err);
     }
 });
-
-let token = bSettings.token;
-
-if (!token)
-{
-    console.warn("main: Token is missing from settings file. Using environment variables.");
-    token = process.env.DISCORD_TOKEN;
-
-    if (!token)
-    {
-        console.error('Token not found from either from the settings or the environment variable.');
-        process.exit(1);
-    }
-}
 
 // All good to go.
 console.log("Available command(s): ");

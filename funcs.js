@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const bSettings = require("./settings.json");
+const bSettings = require("./core/config.js")();
 
 const USER_VALUE_PATH = './user_values.json';
 

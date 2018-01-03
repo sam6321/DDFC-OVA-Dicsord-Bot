@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const bSettings = require('../settings.json');
+const bSettings = require("../core/config.js")();
 var funcs = require("../funcs.js");
 
 exports.description = "Bot developer command.";
