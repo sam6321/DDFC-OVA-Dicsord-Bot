@@ -133,26 +133,26 @@ bot.on('message', (msg) =>
     }
 });
 
-if(!bSettings.token) 
+let token = bSettings.token;
+
+if (!token)
 {
-    console.warn("main: Token is missing from settings file. Using environment variables");
-    bSettings.token = process.env.DISCORD_TOKEN; // see https://github.com/sam6321/DDFC-OVA-Discord-Bot/issues/1
+    console.warn("main: Token is missing from settings file. Using environment variables.");
+    token = process.env.DISCORD_TOKEN;
 
+    if (!token)
+    {
+        console.error('Token not found from either from the settings or the environment variable.');
+        process.exit(1);
+    }
 }
- else if (!process.env.TOKEN)
- {
-    console.error('Token not found from either from the settings or the environment variable.');
-    process.exit(1);
- }
- else 
- {
-    // All good to go.
-    console.log("Available command(s): ");
-    commandDispatcher.each(command => {
-        console.log(`  ${command}`);
-    });
 
-    bot.login(bSettings.token);
-}
+// All good to go.
+console.log("Available command(s): ");
+commandDispatcher.each(command => {
+    console.log(`  ${command}`);
+});
+
+bot.login(bSettings.token);
 
 
