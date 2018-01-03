@@ -138,6 +138,8 @@ if(!bSettings.token)
     console.warn("main: Token is missing from settings file. Using environment variables");
     bSettings = {
         token: process.env.DISCORD_TOKEN; // see https://github.com/sam6321/DDFC-OVA-Discord-Bot/issues/1
+    }
+
 }
  else if (process.env.TOKEN)
  {
@@ -148,7 +150,7 @@ if(!bSettings.token)
  {
     // All good to go.
     console.log("Available command(s): ");
-    commandDispatcher.each(command => {
+    commandDispatcher.forEach(command => {
         console.log(`  ${command}`);
     });
 
