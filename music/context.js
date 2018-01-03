@@ -66,7 +66,7 @@ class MusicContext
 
         // Called when someone votes to skip.
         this.skipHandler.on("vote", e => {
-            if(e.current >= e.required)
+            if(e.willSkip)
             {
                 let embed = this.currentItem.embed().setTitle("Skipping");
                 e.message.channel.send({embed});
