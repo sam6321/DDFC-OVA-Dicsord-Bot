@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A bot for the DDFC OVA Discord server, because Enra's bots are buggy.\r TODO: Literally everything.",
   "engines": {
-    "node": "8.1.x"
+    "node": "7.10.1"
   },
   "dependencies":
   {
