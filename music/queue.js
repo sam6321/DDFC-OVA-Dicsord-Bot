@@ -1,14 +1,13 @@
 const ytdl = require("ytdl-core");
 const Discord = require('discord.js');
 const funcs = require("../funcs.js");
-const EventEmitter = require('events');
 
 /**
  * A music queue item for a youtube video.
  * Contains information about the video.
  * @event load - Fired once the info for this video has been loaded.
  */
-class MusicQueueItem extends EventEmitter
+class MusicQueueItem
 {
     /**
      * Construct a new MusicQueueItem.
@@ -16,31 +15,41 @@ class MusicQueueItem extends EventEmitter
      */
     constructor (url)
     {
-        super();
-
         this.url = url;
-        this.info = null;
+        this._info = null;
 
-        ytdl.getInfo(url, (err, info) => {
-            this.info = {
-                title: info.title,
-                channelURL: info.author.channel_url,
-                duration: info.length_seconds
-            };
+        this.infoPromise = ytdl.getInfo(url)
+            .then(info => {
+                this._info = {
+                    title: info.title,
+                    channelURL: info.author.channel_url,
+                    duration: info.length_seconds
+                };
+            })
+            .catch(console.error);
+    }
 
-            this.emit("load", this);
+    /**
+     * @returns {Promise} A promise for the info of this queue item.
+     */
+    get info ()
+    {
+        return new Promise((resolve, reject) => {
+            this.infoPromise
+                .then(() => resolve(this._info))
+                .catch(reject);
         });
     }
 
     /**
      * @returns {boolean} true if the item has loaded, false if not.
      */
-    get loaded () { return this.info !== null; }
+    get loaded () { return this._info !== null; }
 
     /**
      * @returns {string} The title of this item, or its URL if the info hasn't loaded.
      */
-    get title () { return this.loaded ? this.info.title : this.url; }
+    get title () { return this.loaded ? this._info.title : this.url; }
 
     /**
      * Returns a discordjs RichEmbed representing this item.
@@ -48,11 +57,11 @@ class MusicQueueItem extends EventEmitter
      */
     embed ()
     {
-        let info = this.info;
+        let info = this._info;
 
         let embed = new Discord.RichEmbed();
 
-        if (info)
+        if (this.loaded)
         {
             embed.setDescription(info.title + " (" + funcs.formatTime(info.duration) + ")\n" + this.url);
         }
@@ -70,9 +79,9 @@ class MusicQueueItem extends EventEmitter
      */
     toString ()
     {
-        let info = this.info;
+        let info = this._info;
 
-        if (info)
+        if (this.loaded)
         {
             return info.title + " (" + funcs.formatTime(info.duration) + ")\n" + this.url;
         }
