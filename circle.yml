@@ -11,7 +11,7 @@ jobs:
       - run:
           name: ESLint Check
           command: npm run lint
-notify:
-  webhooks:
+# notify:
+#  webhooks:
   # you need a custom webhook for this. This one posts to Clarity's Discord
   #  - url: https://claraio-circledisc.herokuapp.com/hooks/circleci
