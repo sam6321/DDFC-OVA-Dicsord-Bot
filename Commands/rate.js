@@ -5,6 +5,8 @@ exports.info = exports.description;
 exports.usage = "*rate (something)";
 exports.category = "misc";
 
+const replaceRegex = /\bour\b|\bmy\b|\byour\b|\bthese\b|\bmyself\b|\byourself\b|\bme\b|\byou\b/g;
+
 const replacements = {
     "our": "your",
     "my": "your",
@@ -12,7 +14,8 @@ const replacements = {
     "these": "those",
     "myself": "yourself",
     "yourself": "myself",
-    "me": "you"
+    "me": "you",
+    "you": "me"
 };
 
 const special = [
@@ -42,7 +45,7 @@ exports.call = function (bot, msg, args)
         rating = prefix + number + "/10.";
     }
 
-    let response = query.replace(/\bour\b|\bmy\b|\byour\b|\bthese\b|\bmyself\b|\byourself\b|\bme\b/g, matched => replacements[matched]);
+    let response = query.replace(replaceRegex, matched => replacements[matched]);
 
     msg.channel.send("I rate " + response + rating);
 };
