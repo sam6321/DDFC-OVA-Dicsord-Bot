@@ -204,3 +204,61 @@ module.exports.formatTime = function (inSeconds)
 
     return hours + ":" + ('0' + minutes.toFixed(0)).slice(-2) + ":" + ('0' + seconds.toFixed(0)).slice(-2);
 };
+
+var availableFuncs =
+{
+    randomNumber : module.exports.randInt,
+    randomResponse : module.exports.sample
+};
+
+function customFunc (func, params)
+{
+    let arr = params.substr(1,params.length-2).split(',');
+    arr = arr.map(p => p = module.exports.parseString(p));
+    if (!Array.isArray(arr))
+    {
+        return new Error("I wasn't given a list [] for the paramaters of "+func+".");
+    }
+    if (arr.length < availableFuncs[func].length)
+    {
+        return new Error(`${func} takes ${availableFuncs[func].length} parameters, but I was given ${arr.length}.`);
+    }
+    return availableFuncs[func].apply(null, arr);
+}
+
+module.exports.customStringParse = function(string, variables)
+{
+    let tokens = string.match(/\$\{[^()]*\}/g);
+    tokens = tokens.map(t => t = t.substr(2,t.length-3));
+    console.log(tokens);    
+    let arr;
+
+    for (n=0;n<tokens.length;n++)
+    {
+        t = tokens[n];
+        let func = t.slice(0, t.indexOf(":"));
+        let newVal = '';
+        //console.log(func);
+        if (t.startsWith("config:"))
+        {
+            if (!config[t.substr(7)]) {return new Error("Tried to access a config that doesn't exist.");}
+            newVal = config[t.substr(7)];
+        }
+        else if (variables[t] != undefined)
+        {
+            newVal = variables[t];
+        }
+        else if (availableFuncs[func] != undefined)
+        {
+           newVal = customFunc(func, t.slice(t.indexOf(":")+1));
+        }
+
+        if (!newVal) {return new Error(`A dynamic variable ${t} didn't correspond to a valid function, config, or message/event property.`);}
+        t = t.replace(/\[/, "\\[");
+        t = t.replace(/\]/, "\\]");
+        let reg = new RegExp ("\\$\\{"+t+"\\}", 'g');
+        string = string.replace(reg, newVal);
+        console.log(t+" : "+newVal);
+    }
+    return string;
+};
