@@ -29,7 +29,10 @@ function loadFromEnv (env)
         "host": "DISCORD_HOST"
     };
 
-    Object.keys(envMap).forEach(configVariable => cfg[configVariable] = env[envMap[configVariable]]);
+    for (const [key, value] of Object.entries(envMap))
+    {
+        cfg[key] = env[value];
+    }
 
     return cfg;
 }
@@ -49,10 +52,8 @@ module.exports = function ()
 {
     if (!config)
     {
-        for (let i = 0; i < loadOrder.length; ++i)
+        for (const fn of loadOrder)
         {
-            let fn = loadOrder[i];
-
             try
             {
                 config = fn();
