@@ -11,7 +11,7 @@ exports.call = function (bot, msg, args)
     {
         return;
     }
-    
+
     try
     {
         eval(args.slice(1).join(" "));
