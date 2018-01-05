@@ -16,7 +16,7 @@
   },
   "main": "bot.js",
   "scripts": {
-    "heroku-postinstall": "npm i -g pm2"
+    "heroku-post": "npm i -g pm2"
   },
   "repository": {
     "type": "git",
