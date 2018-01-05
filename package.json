@@ -5,15 +5,17 @@
   "engines": {
     "npm": "4.x.x"
   },
+  "scripts": {
+    "heroku-postbuild": "npm i -g pm2",  
+  },
   "dependencies":
   {
+    "pm2": "^2.9.1",
     "pg": "6.x",
     "discord.js":"11.2.1",
     "ytdl-core":"0.18.5",
     "opusscript":"0.0.6",
-    "seedrandom":"2.4.3",
-    "redis":"2.8.0",
-    "redite":"1.1.0"
+    "seedrandom":"2.4.3"
   },
   "main": "bot.js",
   "scripts": {
