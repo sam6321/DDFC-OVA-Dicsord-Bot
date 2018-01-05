@@ -7,7 +7,7 @@ exports.info = "Clears an amount of messages with the paramater of 'any', 'bots'
 exports.usage = "*clear (number of messages) (any/bots/users)";
 exports.category = "moderation";
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
     let amount = parseInt(args[1]);
     let type = 'any';

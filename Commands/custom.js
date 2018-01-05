@@ -19,7 +19,7 @@ exports.call = function (bot, msg, args, settings)
 
     if (!settings.customCommands)
     {
-    	settings.customCommands = {};
+    	settings.customCommands = {};git
     }
     settings.customCommands[name] = {params:params, response:response};
     fs.writeFileSync(funcs.guildfolder(msg.guild)+"/settings.json", JSON.stringify(settings,null,4));

@@ -7,7 +7,7 @@ exports.info = "Ban a user by their tag, e.g John#1337, id, e.g 2346422415644426
 exports.usage = "*ban (mention/id/username+numbers) (reason)";
 exports.category = "moderation";
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
     if (!msg.member.hasPermission("BAN_MEMBERS"))
     {

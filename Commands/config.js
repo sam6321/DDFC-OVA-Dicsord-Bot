@@ -9,7 +9,7 @@ exports.info = "Used to modify, create, or delete any server setting (with excep
 exports.usage = "*config (display/set/add/remove) (config name) (value/undefined)";
 exports.category = "administration";
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
     let guild_settings = require("."+funcs.guildfolder(msg.guild)+"/settings.json");
     let desc = '';

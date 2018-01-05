@@ -9,12 +9,24 @@ require.extensions[".txt"] = function (filename)
     module.exports = fs.readFileSync(filename, "utf8");
 };
 
+const Discord = require('discord.js');
+/*
+var redis = require("redis"),
+    client = redis.createClient(process.env.REDIS_URL);
+const Redite = require("redite");
+const db = new Redite({client});
+*/
+const Command = require('./core/command.js');
+const fs = require('fs');
+const funcs = require('./funcs.js');
+let bSettings = require("./core/config.js")();
 
 const bot = new Discord.Client();
 let commandDispatcher = new Command.Dispatcher();
 commandDispatcher.addDirectory("./Commands"); // Add all commands from this directory in to the dispatcher.
 
 let messageHandlers = {};
+
 
 // Handle a guild text channel message.
 messageHandlers.text = function (msg)
@@ -32,6 +44,18 @@ messageHandlers.text = function (msg)
     if (guild_settings.disabled.includes(args[0].toLowerCase()))
     {
         return; //return if the command is disabled in the guild
+    }
+    
+    if (guild_settings.customCommands[args[0]])
+    {
+        funcs.runCustomCommand(guild_settings.customCommands[args[0]], msg, args); 
+        return;
+    }
+
+    if (guild_settings.customCommands[args[0]])
+    {
+        funcs.runCustomCommand(guild_settings.customCommands[args[0]], msg, args); 
+        return;
     }
 
     commandDispatcher.dispatch(args[0], bot, msg, args, guild_settings);

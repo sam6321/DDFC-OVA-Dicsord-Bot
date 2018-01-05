@@ -5,7 +5,7 @@ exports.info = exports.description;
 exports.usage = "*eval (code)";
 exports.category = "hidden";
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
     if (msg.author.id !== bSettings.host)
     {

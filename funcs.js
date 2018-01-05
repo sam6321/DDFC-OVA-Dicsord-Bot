@@ -1,9 +1,45 @@
 const fs = require('fs');
 const path = require('path');
 const bSettings = require("./core/config.js")();
-
+/*
+var redis = require("redis"),
+    client = redis.createClient(process.env.REDIS_URL);
+const Redite = require("redite");
+const db = new Redite({client});
+*/
 const USER_VALUE_PATH = './user_values.json';
+/*
+module.exports.guildSettings = async function (guild)
+{
+    let textChannel = guild.channels.find('type', 'text');
 
+    if(!textChannel)
+    {
+        console.error(`funcs: Guild ${guild.name} does not have a text channel!`);
+    }
+    if (await db.guilds.has(guild.id))
+    { 
+        return await db.guilds[guild.id].get;
+    }
+
+    const init_settings =
+    {
+        banned_users    :   [],
+        custom_commands :   [],
+        prefix          :   bSettings.prefix,
+        admins          :   [guild.ownerID],
+        enabled_events  :   [],
+        greet           :   true,
+        greet_channel   :   textChannel.id, // defaultChannel is deprecated, just default to the very first channel.
+        mod_channel     :   null,  
+        disabled        :   []
+    };
+    console.log(`Creating db entry for guild: ${guild.name}`);
+
+    db.guilds[guild.id].set(init_settings);
+    return init_settings;
+};
+*/
 module.exports.guildfolder = function (guild)
 {
     let textChannel = guild.channels.find('type', 'text');
@@ -52,34 +88,17 @@ module.exports.guildSettings = function (guild)
 
 module.exports.setUserValue = function(user, valueName, value)
 {
-    if(!fs.existsSync(USER_VALUE_PATH))
-    {
-        fs.writeFileSync(USER_VALUE_PATH, '{}');
-    }
-
-    let userData = JSON.parse(fs.readFileSync(USER_VALUE_PATH));
-    let values = userData[user.id] || {};
-
-    values[valueName] = value;
-
-    userData[user.id] = values;
-
-    fs.writeFileSync(USER_VALUE_PATH, JSON.stringify(userData, null, 4));
+    db.users[user.id][valueName].set(value);
 };
-
+/*
 module.exports.getUserValue = function(user, valueName)
 {
-    if(!fs.existsSync(USER_VALUE_PATH))
-    {
-        fs.writeFileSync(USER_VALUE_PATH, '{}');
+    if (await db.users[user.id].has(valueName));
+    { 
+        return await db.users[user.id][valueName].get;
     }
-
-    let userData = JSON.parse(fs.readFileSync(USER_VALUE_PATH));
-    let values = userData[user.id] || {};
-
-    return values[valueName];
 };
-
+*/
 module.exports.parseString = function(string)
 {
     let out = "";
@@ -177,6 +196,11 @@ module.exports.randInt = function(min,max)
  */
 module.exports.sample = function (array)
 {
+    if (arguments.length > 1)
+    {
+        array = Array.prototype.slice.call(arguments);
+    }
+    console.log(array);
     return array[Math.floor(Math.random() * array.length)];
 };
 
@@ -254,6 +278,10 @@ module.exports.customStringParse = function(string, variables, n)
     for (let n=0;n<tokens.length;n++)
     {
         let t = tokens[n];
+<<<<<<< HEAD
+        console.log(t);
+=======
+>>>>>>> ba340e4309282dceaa71add7c20549c62cca7422
         let func = t.slice(0, t.indexOf(":"));
         let newVal = "";
         if (t.startsWith("config:"))
@@ -295,4 +323,8 @@ module.exports.runCustomCommand = function (command, msg, args)
         variables[command.params[i]] = args[i+1];
     }
     msg.channel.send(module.exports.customStringParse(command.response, variables, 0));
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ba340e4309282dceaa71add7c20549c62cca7422
