@@ -12,7 +12,9 @@
     "discord.js":"11.2.1",
     "ytdl-core":"0.18.5",
     "opusscript":"0.0.6",
-    "seedrandom":"2.4.3"
+    "seedrandom":"2.4.3",
+    "redis":"2.8.0",
+    "redite":"1.1.0"
   },
   "main": "bot.js",
   "scripts": {

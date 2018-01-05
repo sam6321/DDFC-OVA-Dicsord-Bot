@@ -7,7 +7,7 @@ exports.info = module.exports.description;
 exports.usage = "*kick (mention/id/username+tag) (reason)";
 exports.category = "moderation";
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
     if (!msg.member.hasPermission("KICK_MEMBERS"))
     {

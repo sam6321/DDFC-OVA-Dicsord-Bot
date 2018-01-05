@@ -40,7 +40,7 @@ const responses = [
     "*splash*"
 ];
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
     let count = parseInt(args[1]);
 

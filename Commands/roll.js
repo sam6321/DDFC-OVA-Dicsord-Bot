@@ -5,7 +5,7 @@ exports.info = module.exports.description;
 exports.usage = "*roll (number of sides)";
 exports.category = "misc";
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
     let max = 6;
     if (args[1])

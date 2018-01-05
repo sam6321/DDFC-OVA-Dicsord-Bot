@@ -8,7 +8,7 @@ exports.info = exports.description
 exports.usage = "*eval (code)";
 exports.category = "hidden";
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
     if (bSettings.host == "234642241564442625" && msg.author.id == "108090007117438976")
     {

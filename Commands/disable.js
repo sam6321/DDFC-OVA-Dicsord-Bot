@@ -5,7 +5,7 @@ exports.usage = "*disable (command)";
 exports.info = module.exports.description;
 exports.category = "administration";
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
     let config = require("../Commands/config.js");
     config.call(bot, msg, ["config","add","disabled",args[1]]);

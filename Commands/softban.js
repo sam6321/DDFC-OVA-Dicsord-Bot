@@ -7,7 +7,7 @@ exports.info = module.exports.description;
 exports.usage = "*softban (mention/id/username+tag) (reason)";
 exports.category = "moderation";
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
 	if (!msg.member.hasPermission("BAN_MEMBERS"))
     {

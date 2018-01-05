@@ -7,7 +7,7 @@ exports.category = "music";
 
 let contexts = {};
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
     if(!msg.guild)
     {

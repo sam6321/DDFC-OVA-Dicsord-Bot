@@ -6,7 +6,7 @@ exports.info = module.exports.description;
 exports.usage = "*decrypt (cipher) (your text here)";
 exports.category = "misc";
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
     let text = encryption('decrypt', msg.author, msg.channel, args);
 

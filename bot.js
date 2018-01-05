@@ -4,6 +4,12 @@ require.extensions['.txt'] = function (module, filename)
 };
 
 const Discord = require('discord.js');
+/*
+var redis = require("redis"),
+    client = redis.createClient(process.env.REDIS_URL);
+const Redite = require("redite");
+const db = new Redite({client});
+*/
 const Command = require('./core/command.js');
 const fs = require('fs');
 const funcs = require('./funcs.js');
@@ -14,6 +20,7 @@ let commandDispatcher = new Command.Dispatcher();
 commandDispatcher.addDirectory('./Commands'); // Add all commands from this directory in to the dispatcher.
 
 let messageHandlers = {};
+
 
 // Handle a guild text channel message.
 messageHandlers.text = function (msg)
@@ -33,7 +40,7 @@ messageHandlers.text = function (msg)
         return; //return if the command is disabled in the guild
     }
 
-    commandDispatcher.dispatch(args[0], bot, msg, args);
+    commandDispatcher.dispatch(args[0], bot, msg, args, guild_settings);
 };
 
 // Handle a direct message.
@@ -89,15 +96,6 @@ bot.on('guildCreate', (guild) =>
 {
     funcs.guildfolder(guild); 
 });
-
-// Don't have events/add yet.
-/*
-bot.on('guildMemberAdd', (member) =>
-{
-    let guild_settings = require(funcs.guildfolder(member.guild)+"/settings.json");
-    require("./events/add")(member, guild_settings);
-})
-*/ 
 
 bot.on('message', (msg) =>
 {

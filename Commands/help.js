@@ -7,7 +7,7 @@ exports.info = module.exports.description;
 exports.usage = "*help (blank/compact/command name)";
 exports.category = "misc";
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
     let embed = new Discord.RichEmbed().setTitle("Command List");
     if(msg.guild)

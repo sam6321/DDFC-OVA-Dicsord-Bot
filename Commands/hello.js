@@ -5,15 +5,16 @@ exports.info = module.exports.description;
 exports.usage = "*hello";
 exports.category = "misc";
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
-    let prefix = "";
-
     if(msg.guild)
     {
-        let guild_settings = funcs.guildSettings(msg.guild);
-        prefix = guild_settings.prefix;
+        funcs.guildSettings(msg.guild).then((settings)=>
+        {
+            let prefix = settings.prefix;
+            msg.channel.send(`Hello! I'm ${bot.user.tag}. Please type '${prefix}help' for a list of commands!`);
+        });
+        return;
     }
-
-    msg.channel.send(`Hello! I'm ${bot.user.tag}. Please type '${prefix}help' for a list of commands!`);
+    msg.channel.send(`Hello! I'm ${bot.user.tag}. Please type 'help' for a list of commands!`);
 };

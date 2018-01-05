@@ -9,7 +9,7 @@ exports.info = module.exports.description;
 exports.usage = "*key (your key here)";
 exports.category = "misc";
 
-exports.call = function (bot, msg, args)
+exports.call = function (bot, msg, args, settings)
 {
     if(msg.channel.type !== "dm")
     {
