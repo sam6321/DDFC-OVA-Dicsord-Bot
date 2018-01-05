@@ -73,11 +73,11 @@ class CommandDispatcher
     {
         if (typeof object === 'function')
         {
-            return async args => object(...args);
+            return args => object(...args);
         }
         else if (typeof object.call === 'function')
         {
-            return async args => object.call(...args);
+            return args => object.call(...args);
         }
         else
         {

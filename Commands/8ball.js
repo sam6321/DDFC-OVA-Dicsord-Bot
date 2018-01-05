@@ -5,8 +5,9 @@ exports.usage = "*8ball (question)";
 exports.info = module.exports.description;
 exports.category = "misc";
 
+const responses = ["Yes.","Absolutely.","I garuntee it.","Probably.","I have no idea.","No.","Not at all.","Nope.","Probably not.","Ask Riko."];
+
 exports.call = async function (context)
 {
-    let responses = ["Yes.","Absolutely.","I garuntee it.","Probably.","I have no idea.","No.","Not at all.","Nope.","Probably not.","Ask Riko."];
-    context.send(responses[funcs.randInt(0,responses.length)]);
+    context.send(funcs.sample(responses));
 };

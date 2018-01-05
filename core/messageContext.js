@@ -1,13 +1,14 @@
 const funcs = require('../funcs.js');
-let bSettings = require("./config.js")();
+let bSettings = require("./globalConfig.js")();
 
 class MessageContext
 {
-    constructor (client, msg, prefix)
+    constructor (client, msg)
     {
         this.client = client;
         this.msg = msg;
-        this.prefix = prefix;
+        this.prefix = bSettings.prefix;
+        this.authorConfig = null;
 
         this.setArgs(msg.content);
     }
@@ -29,6 +30,16 @@ class MessageContext
         this.args = args.slice(this.prefix.length).split(' ');
     }
 
+    setPrefix (prefix)
+    {
+        this.prefix = prefix;
+    }
+
+    setAuthorConfig (config)
+    {
+        this.authorConfig = config;
+    }
+
     send (...response)
     {
         return this.channel.send(...response);
@@ -39,18 +50,20 @@ class GuildMessageContext extends MessageContext
 {
     constructor (client, msg)
     {
-        let guildSettings = funcs.guildSettings(msg.guild);
+        super(client, msg);
+        this.guildConfig = null;
+    }
 
-        super(client, msg, guildSettings.prefix);
-
-        this.guildSettings = guildSettings;
+    setGuildConfig (config)
+    {
+        this.guildConfig = config;
     }
 
     validate ()
     {
         let msg = this.msg;
 
-        return !this.guildSettings.disabled.includes(this.command) &&
+        return !this.guildConfig.disabled.includes(this.command) &&
             (msg.content.startsWith(this.prefix) ||
             msg.content.startsWith(`${bSettings.prefix}help`));
     }
@@ -60,7 +73,8 @@ class DMMessageContext extends MessageContext
 {
     constructor (client, msg)
     {
-        super(client, msg, ''); // No prefix in DM
+        super(client, msg);
+        this.setPrefix(''); // No prefix in DM
     }
 }
 
@@ -68,13 +82,13 @@ class GroupMessageContext extends MessageContext
 {
     constructor (client, msg)
     {
-        super(client, msg, bSettings.prefix); // use the default prefix
+        super(client, msg);
     }
 
     validate ()
     {
         // Valid if the message starts with the default prefix.
-        return this.msg.content.startsWith(bSettings.prefix);
+        return this.msg.content.startsWith(this.prefix);
     }
 }
 
@@ -87,6 +101,7 @@ const messageContextMap = {
 /**
  * Creates a message context for the given message
  * @param client
+ * @param handler
  * @param msg
  * @returns {GroupMessageContext|DMMessageContext|GuildMessageContext}
  */
