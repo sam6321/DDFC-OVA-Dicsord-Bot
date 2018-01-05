@@ -55,17 +55,17 @@ const people = {
     "muteogen": "Usually found commenting on how dead the chat is. Chat never truly dies, though.",
     "riko": "I can appreciate her, but she needs quite a few of her bugs sorted out.",
     "epyc": "A literal 0/10. You can't get any more 0 than this, it's mathematically impossible.",
-    "supared": "todo"
+    "supared": "todo ;)"
 };
 
-exports.call = function (bot, msg, args)
+exports.call = function (context)
 {
-    let query = args.slice(1).join(' ');
+    let query = context.args.slice(1).join(' ');
     let rating = "";
 
     if (!query)
     {
-        msg.channel.send("I rate your ability to use this command a 0/10.");
+        context.send("I rate your ability to use this command a 0/10.");
         return;
     }
 
@@ -73,7 +73,7 @@ exports.call = function (bot, msg, args)
     let number = parseFloat(query);
     if (!Number.isNaN(number))
     {
-        msg.channel.send("I rate " + number + " **" + (number * 10) + "/10.**");
+        context.send("I rate " + number + " **" + (number * 10) + "/10.**");
         return;
     }
 
@@ -83,7 +83,7 @@ exports.call = function (bot, msg, args)
         let entry = people[query.toLowerCase()];
         if (entry)
         {
-            msg.channel.send(entry);
+            context.send(entry);
             return;
         }
     }
@@ -114,5 +114,5 @@ exports.call = function (bot, msg, args)
         return replace;
     });
 
-    msg.channel.send("I rate " + response + rating);
+    context.send("I rate " + response + rating);
 };

@@ -6,18 +6,15 @@ exports.info = module.exports.description;
 exports.usage = "*encrypt (cipher) (your text here)";
 exports.category = "misc";
 
-exports.call = function (bot, msg, args)
+exports.call = function (context)
 {
-    let author = msg.author;
-    let channel = msg.channel;
-
     // Can't delete DM messages.
-    if(msg.guild)
+    if(context.guild)
     {
-        msg.delete();
+        context.msg.delete();
     }
 
-    let text = encryption('encrypt', author, channel, args);
+    let text = encryption('encrypt', context.author, context.channel, context.args);
 
     if(text)
     {
@@ -25,6 +22,6 @@ exports.call = function (bot, msg, args)
         embed.setTitle("Your encrypted message is:");
         embed.setDescription(text);
 
-        channel.send({embed});
+        context.send({embed});
     }
 };

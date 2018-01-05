@@ -1,68 +1,12 @@
-require.extensions['.txt'] = function (module, filename) 
-{
-    module.exports = fs.readFileSync(filename, 'utf8');
-};
-
 const Discord = require('discord.js');
-const Command = require('./core/command.js');
 const fs = require('fs');
 const funcs = require('./funcs.js');
 let bSettings = require("./core/config.js")();
+const MessageHandler = require('./core/messageHandler.js');
+const Command = require('./core/command.js');
 
 const bot = new Discord.Client();
-let commandDispatcher = new Command.Dispatcher();
-commandDispatcher.addDirectory('./Commands'); // Add all commands from this directory in to the dispatcher.
-
-let messageHandlers = {};
-
-// Handle a guild text channel message.
-messageHandlers.text = function (msg)
-{
-    let guild_settings = funcs.guildSettings(msg.guild);
-
-    if (!msg.content.startsWith(guild_settings.prefix) && !msg.content.startsWith(`${bSettings.prefix}help`))
-    {
-        return;
-    }
-
-    // Ignore the prefix, and split args in to words.
-    let args = msg.content.slice(guild_settings.prefix.length).split(' ');
-
-    if (guild_settings.disabled.includes(args[0].toLowerCase()))
-    {
-        return; //return if the command is disabled in the guild
-    }
-
-    commandDispatcher.dispatch(args[0], bot, msg, args);
-};
-
-// Handle a direct message.
-messageHandlers.dm = function (msg)
-{
-    // No prefix in DM
-    let args = msg.content.split(' ');
-    commandDispatcher.dispatch(args[0], bot, msg, args);
-};
-
-// Handle a group chat message.
-messageHandlers.group = function (msg)
-{
-    // Just use whatever the default prefix is for group chats.
-    // This bot will probably never be in group chat anyway.
-    if(!msg.content.startsWith(bSettings.prefix))
-    {
-        return;
-    }
-
-    let args = msg.content.slice(bSettings.prefix.length).split(' ');
-    commandDispatcher.dispatch(args[0], bot, msg, args);
-};
-
-// Handle a voice chat message?
-messageHandlers.voice = function (msg)
-{
-    console.log("Weird attempt to handle text response in voice channel.");
-};
+const messageHandler = new MessageHandler(bot);
 
 bot.on("guildMemberAdd", member => {
     let guild_settings = funcs.guildSettings(member.guild);
@@ -90,33 +34,16 @@ bot.on('guildCreate', (guild) =>
     funcs.guildfolder(guild); 
 });
 
-// Don't have events/add yet.
-/*
-bot.on('guildMemberAdd', (member) =>
-{
-    let guild_settings = require(funcs.guildfolder(member.guild)+"/settings.json");
-    require("./events/add")(member, guild_settings);
-})
-*/ 
-
 bot.on('message', (msg) =>
 {
-    if(msg.author === bot.user)
+    if (msg.author === bot.user)
     {
         return; // Never respond to ourself.
     }
 
-    let handler = messageHandlers[msg.channel.type];
-
-    if(!handler)
-    {
-        console.log("Unknown message type. Local API version might be out of date.");
-        return;
-    }
-
     try
     {
-        handler(msg);
+        messageHandler.runMessage(msg);
     }
     catch(err)
     {
@@ -133,11 +60,15 @@ bot.on('message', (msg) =>
     }
 });
 
+// Add all the commands from the commands folder to the message handler's command list.
+new Command.Loader(messageHandler.commands).addDirectory('./Commands');
+
 // All good to go.
 console.log("Available command(s): ");
-commandDispatcher.each(command => {
-    console.log(`  ${command}`);
-});
+for (const command of messageHandler.commands)
+{
+    console.log(`  ${command[0]}`);
+}
 
 bot.login(bSettings.token);
 

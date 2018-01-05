@@ -6,9 +6,9 @@ exports.info = module.exports.description;
 exports.usage = "*decrypt (cipher) (your text here)";
 exports.category = "misc";
 
-exports.call = function (bot, msg, args)
+exports.call = function (context)
 {
-    let text = encryption('decrypt', msg.author, msg.channel, args);
+    let text = encryption('decrypt', context.author, context.channel, context.args);
 
     if(text)
     {
@@ -16,6 +16,6 @@ exports.call = function (bot, msg, args)
         embed.setTitle("Your decrypted message is:");
         embed.setDescription(text);
 
-        msg.channel.send({embed});
+        context.send({embed});
     }
 };

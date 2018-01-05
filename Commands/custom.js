@@ -6,9 +6,18 @@ exports.usage = "*custom (new/edit/remove) (name) (arguments) (response)";
 exports.info = exports.usage+"\nExample: *custom new roll [sides] I rolled a ${sides} sided die and got a ${randomNumber:[1,${sides}]}";
 exports.category = "administration";
 
-exports.call = function (bot, msg, args, settings)
+exports.call = function (context)
 {
-	if (args[1] != 'new')
+    let args = context.args;
+    let settings = context.guildSettings;
+
+    if (!settings)
+    {
+        context.send("This command can only be used from within a guild.");
+        return;
+    }
+
+	if (args[1] !== 'new')
 	{
 		return;
 	}
@@ -21,6 +30,8 @@ exports.call = function (bot, msg, args, settings)
     {
     	settings.customCommands = {};
     }
+
     settings.customCommands[name] = {params:params, response:response};
-    fs.writeFileSync(funcs.guildfolder(msg.guild)+"/settings.json", JSON.stringify(settings,null,4));
-}
+
+    fs.writeFileSync(funcs.guildfolder(context.guild)+"/settings.json", JSON.stringify(settings,null,4));
+};

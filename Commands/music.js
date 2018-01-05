@@ -7,22 +7,22 @@ exports.category = "music";
 
 let contexts = {};
 
-exports.call = function (bot, msg, args)
+exports.call = function (messageContext)
 {
-    if(!msg.guild)
+    if(!messageContext.guild)
     {
-        msg.channel.send("Can't access music commands outside of a guild.");
+        messageContext.send("Can't access music commands outside of a guild.");
         return;
     }
 
-    let context = contexts[msg.guild.id];
+    let musicContext = contexts[messageContext.id];
 
-    if(!context)
+    if(!musicContext)
     {
         // This guild doesn't have a context, so get one for it.
-        context = new MusicContext(msg.guild);
-        contexts[msg.guild.id] = context;
+        musicContext = new MusicContext(messageContext.guild);
+        contexts[messageContext.id] = musicContext;
     }
 
-    context.run(bot, msg, args);
+    musicContext.run(messageContext);
 };

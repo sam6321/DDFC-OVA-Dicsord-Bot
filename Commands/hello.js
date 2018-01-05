@@ -1,19 +1,9 @@
-var funcs = require('../funcs.js');
-
 exports.description = "Say hello!";
 exports.info = module.exports.description;
 exports.usage = "*hello";
 exports.category = "misc";
 
-exports.call = function (bot, msg, args)
+exports.call = function (context)
 {
-    let prefix = "";
-
-    if(msg.guild)
-    {
-        let guild_settings = funcs.guildSettings(msg.guild);
-        prefix = guild_settings.prefix;
-    }
-
-    msg.channel.send(`Hello! I'm ${bot.user.tag}. Please type '${prefix}help' for a list of commands!`);
+    context.send(`Hello! I'm ${context.client.user.tag}. Please type '${context.prefix}help' for a list of commands!`);
 };

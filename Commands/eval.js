@@ -5,16 +5,16 @@ exports.info = exports.description;
 exports.usage = "*eval (code)";
 exports.category = "hidden";
 
-exports.call = function (bot, msg, args)
+exports.call = function (context)
 {
-    if (msg.author.id !== bSettings.host)
+    if (context.author.id !== bSettings.host)
     {
         return;
     }
 
     try
     {
-        eval(args.slice(1).join(" "));
+        eval(context.args.slice(1).join(" "));
     }
     catch(err)
     {

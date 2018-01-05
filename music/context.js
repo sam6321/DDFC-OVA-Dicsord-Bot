@@ -97,12 +97,12 @@ class MusicContext
 
     /**
      * Runs a music command on this context
-     * @param bot - The bot.
-     * @param msg - The received message.
-     * @param args - Message arguments.
      */
-    run (bot, msg, args)
+    run (context)
     {
+        let msg = context.msg;
+        let args = context.args;
+
         switch(args[1])
         {
             case "play":
@@ -118,7 +118,7 @@ class MusicContext
                 break;
 
             default:
-                msg.channel.send("Invalid music command.");
+                context.send("Invalid music command.");
                 break;
         }
     }

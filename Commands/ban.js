@@ -1,5 +1,3 @@
-const fs = require('fs');
-const Discord = require('discord.js');
 var funcs = require("../funcs.js");
 
 exports.description = "Ban a user.";
@@ -7,18 +5,25 @@ exports.info = "Ban a user by their tag, e.g John#1337, id, e.g 2346422415644426
 exports.usage = "*ban (mention/id/username+numbers) (reason)";
 exports.category = "moderation";
 
-exports.call = function (bot, msg, args)
+exports.call = function (context)
 {
-    if (!msg.member.hasPermission("BAN_MEMBERS"))
+    let args = context.args;
+
+    if (!context.member.hasPermission("BAN_MEMBERS"))
     {
-        msg.channel.send("Insufficient permissions.");
+        context.send("Insufficient permissions.");
     }
-    let member = funcs.findMember(msg, args);
+
+    let member = funcs.findMember(context.msg, args);
+    let joinedArgs = args.join('');
+
     if (!member)
     {
-        msg.channel.send("Couldn't find that member."+(msg.content.includes("#") ? " Maybe try mentioning that user instead?" : ""));
+        context.send("Couldn't find that member." + (joinedArgs.includes("#") ? " Maybe try mentioning that user instead?" : ""));
         return;
     }
-    member.ban(args.length > 2 ? args.slice(2).join(" ") : "No reason given");
-    msg.channel.send(member.user.tag+" was banned! Reason: "+(args.length > 2 ? args.slice(2).join(" ") : "No reason given"));
-}
+
+    member.ban(args.length > 2 ? args.slice(2).join(" ") : "No reason given")
+        .then(() => context.send(member.user.tag + " was banned! Reason: " + (args.length > 2 ? args.slice(2).join(" ") : "No reason given")))
+        .catch(err => context.send("Failed to ban user " + member.user.tag +". Reason: " + err.message));
+};

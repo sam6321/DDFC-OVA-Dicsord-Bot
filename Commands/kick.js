@@ -1,5 +1,3 @@
-const fs = require('fs');
-const Discord = require('discord.js');
 var funcs = require("../funcs.js");
 
 exports.description = "Kick a user.";
@@ -7,18 +5,25 @@ exports.info = module.exports.description;
 exports.usage = "*kick (mention/id/username+tag) (reason)";
 exports.category = "moderation";
 
-exports.call = function (bot, msg, args)
+exports.call = function (context)
 {
-    if (!msg.member.hasPermission("KICK_MEMBERS"))
+    let args = context.args;
+
+    if (!context.member.hasPermission("KICK_MEMBERS"))
     {
-        msg.channel.send("Insufficient permissions.");
+        context.send("Insufficient permissions.");
     }
-    let member = funcs.findMember(msg, args);
+
+    let member = funcs.findMember(context.msg, args);
+    let joinedArgs = context.args.join('');
+
     if (!member)
     {
-        msg.channel.send("Couldn't find that member."+(msg.content.includes("#") ? " Maybe try mentioning that user instead?" : ""));
+        context.send("Couldn't find that member."+(joinedArgs.includes("#") ? " Maybe try mentioning that user instead?" : ""));
         return;
     }
-    member.kick(args.length > 2 ? args.slice(2).join(" ") : "No reason given");
-    msg.channel.send(member.user.tag+" was kicked! Reason: "+(args.length > 2 ? args.slice(2).join(" ") : "No reason given"));
-}
+
+    member.kick(args.length > 2 ? args.slice(2).join(" ") : "No reason given")
+        .then(() => context.send(member.user.tag+" was kicked! Reason: "+(args.length > 2 ? args.slice(2).join(" ") : "No reason given")))
+        .catch(err => context.send("Failed to kick user " + member.user.tag +". Reason: " + err.message));
+};

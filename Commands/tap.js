@@ -40,33 +40,33 @@ const responses = [
     "*splash*"
 ];
 
-exports.call = function (bot, msg, args)
+exports.call = function (context)
 {
-    let count = parseInt(args[1]);
+    let count = parseInt(context.args[1]);
 
     if (count === undefined || Number.isNaN(count))
     {
-        msg.channel.send("Please request a valid amount.");
+        context.send("Please request a valid amount.");
         return;
     }
 
     if (count > 50)
     {
-        msg.channel.send("No, you'll dry up the tap.");
+        context.send("No, you'll dry up the tap.");
         return;
     }
     else if(count === 0)
     {
-        msg.channel.send("Well if you don't want anything, why are you using the tap?");
+        context.send("Well if you don't want anything, why are you using the tap?");
         return;
     }
     else if(count < 0)
     {
-        msg.channel.send("You can't deposit anything in to the tap.");
+        context.send("You can't deposit anything in to the tap.");
         return;
     }
 
-    msg.channel.send(funcs.sample(responses));
+    context.send(funcs.sample(responses));
 
     setTimeout(() => {
         let text = "";
@@ -75,6 +75,6 @@ exports.call = function (bot, msg, args)
             text += ":milk: ";
         }
 
-        msg.channel.send(text);
+        context.send(text);
     }, funcs.mapLinear(count, 0, 50, 500, 3000)); // Map the count to a delay time.
 };

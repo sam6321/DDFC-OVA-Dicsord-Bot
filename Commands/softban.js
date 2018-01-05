@@ -1,5 +1,3 @@
-const fs = require('fs');
-const Discord = require('discord.js');
 var funcs = require("../funcs.js");
 
 exports.description = "Softban a user. Deletes all of their messages, but they can still rejoin.";
@@ -7,19 +5,30 @@ exports.info = module.exports.description;
 exports.usage = "*softban (mention/id/username+tag) (reason)";
 exports.category = "moderation";
 
-exports.call = function (bot, msg, args)
+exports.call = function (context)
 {
-	if (!msg.member.hasPermission("BAN_MEMBERS"))
+    let args = context.args;
+
+	if (!context.member.hasPermission("BAN_MEMBERS"))
     {
-        msg.channel.send("Insufficient permissions.");
+        context.send("Insufficient permissions.");
     }
-    let member = funcs.findMember(msg, args);
+
+    let member = funcs.findMember(context.msg, args);
+    let joinedArgs = args.join('');
+
     if (!member)
     {
-        msg.channel.send("Couldn't find that member."+(msg.content.includes("#") ? " Maybe try mentioning that user instead?" : ""));
+        context.send("Couldn't find that member."+(joinedArgs.includes("#") ? " Maybe try mentioning that user instead?" : ""));
         return;
     }
-    member.ban(7, (args.length > 2 ? args.slice(2).join(" ") : "No reason given"));
-    msg.guild.unban(member.user);
-    msg.channel.send(member.user.tag+" was softbanned! Reason: "+(args.length > 2 ? args.slice(2).join(" ") : "No reason given"));
-}
+
+    let error = err => context.send("Failed to softban user " + member.user.tag +". Reason: " + err.message);
+    member.ban(7, (args.length > 2 ? args.slice(2).join(" ") : "No reason given"))
+        .then(() => {
+            context.guild.unban(member.user)
+                .then(() => context.send(member.user.tag+" was softbanned! Reason: "+(args.length > 2 ? args.slice(2).join(" ") : "No reason given")))
+                .catch(error);
+        })
+        .catch(error);
+};
