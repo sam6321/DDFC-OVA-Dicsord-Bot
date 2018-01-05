@@ -33,7 +33,7 @@ messageHandlers.text = function (msg)
         return; //return if the command is disabled in the guild
     }
 
-    commandDispatcher.dispatch(args[0], bot, msg, args);
+    commandDispatcher.dispatch(args[0], bot, msg, args, guild_settings);
 };
 
 // Handle a direct message.
