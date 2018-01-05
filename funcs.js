@@ -82,7 +82,7 @@ module.exports.getUserValue = function(user, valueName)
 
 module.exports.parseString = function(string)
 {
-    let out = '';
+    let out = "";
     switch (string)
     {
         case "null":
@@ -94,7 +94,7 @@ module.exports.parseString = function(string)
         case "false":
             return false
         default:
-            if (parseInt(string)+'' == string)
+            if (parseInt(string)+"" == string)
             {
                 return parseInt(string);
             }
@@ -240,7 +240,7 @@ module.exports.customStringParse = function(string, variables, n)
     {
         return new Error("Do not nest more than two functions/variables inside of each other.");
     }
-    if (typeof string != 'string')
+    if (typeof string != "string")
     {
         return string;
     }
@@ -255,7 +255,7 @@ module.exports.customStringParse = function(string, variables, n)
     {
         let t = tokens[n];
         let func = t.slice(0, t.indexOf(":"));
-        let newVal = '';
+        let newVal = "";
         if (t.startsWith("config:"))
         {
             if (!config[t.substr(7)]) {return new Error("Tried to access a config that doesn't exist.");}
