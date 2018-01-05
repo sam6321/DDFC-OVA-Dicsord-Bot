@@ -1,76 +1,80 @@
-// Note: The main config is only loaded once during the lifetime of the application.
+// The state of the guild config is loaded at the start of a message handler.
+// The handler can then make modifications to the settings, and if any changes are made, they are auto-comitted at the end.
+const fse = require("fs-extra");
+const path = require("path");
+const globalSettings = require("./globalConfig.js")();
 
-const fs = require("fs");
+const BASE_GUILD_PATH = "./Guilds/";
+const GUILD_CONFIG_FILE_NAME = "config.json";
 
-let config = null;
-
-/**
- * Loads up config variables from the specified JSON file.
- * @param file - The file to load the config from.
- * @returns {*} - The loaded config variables.
- */
-function loadFromFile (file)
+function getInitialSettings (guild)
 {
-    return JSON.parse(fs.readFileSync(file));
-}
+    let textChannel = guild.channels.find('type', 'text');
 
-/**
- * Loads up config variables from the system environment variables.
- * @param env - The environment variables.
- * @returns {*} - The loaded config variables.
- */
-function loadFromEnv (env)
-{
-    let cfg = {};
-
-    const envMap = {
-        "token": "DISCORD_TOKEN",
-        "prefix": "DISCORD_PREFIX",
-        "host": "DISCORD_HOST"
+    return {
+        banned_users    :   [],
+        custom_commands :   [],
+        prefix          :   globalSettings.prefix,
+        admins          :   [guild.ownerID],
+        enabled_events  :   [],
+        greet           :   true,
+        greet_channel   :   textChannel.id, // defaultChannel is deprecated, just default to the very first channel.
+        mod_channel     :   null,
+        disabled        :   [],
+        aliases         :   {}
     };
-
-    for (const [key, value] of Object.entries(envMap))
-    {
-        cfg[key] = env[value];
-    }
-
-    return cfg;
 }
 
-let loadOrder = [
-    loadFromFile.bind(null, "./settings.json"),
-    loadFromEnv.bind(null, process.env)
-];
-
 /**
- * Returns the current app configuration.
- * Attempts to load the configuration if it has not been loaded.
- * Will return null if no configuration loading methods succeed.
- * @returns {*} - App configuration, or null.
+ * Responsible for handling the guild's config file.
+ * Loads the config file up, then any changes to this._config will be saved when save is called.
  */
-module.exports = function ()
+class GuildConfigFile
 {
-    if (!config)
+    constructor (guild)
     {
-        for (const fn of loadOrder)
-        {
-            try
-            {
-                config = fn();
-                console.log("Loaded config via: " + fn.name);
-                break;
-            }
-            catch (e)
-            {
-                console.warn("config: Could not load via: " + fn.name + "\n" + e);
-            }
-        }
-
-        if(!config)
-        {
-            console.error("config: Could not load config from any source! Please check app configuration.");
-        }
+        this.guild = guild;
+        this._config = null;
+        this.path = path.join(BASE_GUILD_PATH, this.guild.id);
+        this.configPath = path.join(this.path, GUILD_CONFIG_FILE_NAME);
     }
 
-    return config;
-};
+    async config ()
+    {
+        return await this.load();
+    }
+
+    async initial ()
+    {
+        let initialSettings = getInitialSettings(this.guild);
+
+        console.log(`guildConfig: Creating guild config entry for guild: ${this.guild.name}`);
+
+        await fse.ensureDir(this.path);
+        await fse.writeFile(this.configPath, JSON.stringify(initialSettings, null, 4));
+
+        return initialSettings;
+    }
+
+    async load ()
+    {
+        if (!await fse.pathExists(this.configPath))
+        {
+            this._config = await this.initial();
+        }
+        else
+        {
+            let config = await fse.readFile(this.configPath);
+            this._config = JSON.parse(config);
+        }
+
+        return this._config;
+    }
+
+    async save ()
+    {
+        await fse.writeFile(this.configPath, JSON.stringify(this._config, null, 4));
+    }
+}
+
+module.exports.File = GuildConfigFile;

@@ -13,7 +13,12 @@
     "ytdl-core":"0.18.5",
     "opusscript":"0.0.6",
     "seedrandom":"2.4.3",
+<<<<<<< HEAD
+    "redis":"2.8.0",
+    "redite":"1.1.0"
+=======
     "ffmpeg-binaries": "^3.2.2-3"
+>>>>>>> ba340e4309282dceaa71add7c20549c62cca7422
   },
   "main": "bot.js",
   "scripts": {
