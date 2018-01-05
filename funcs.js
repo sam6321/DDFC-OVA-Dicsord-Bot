@@ -205,16 +205,24 @@ module.exports.formatTime = function (inSeconds)
     return hours + ":" + ('0' + minutes.toFixed(0)).slice(-2) + ":" + ('0' + seconds.toFixed(0)).slice(-2);
 };
 
+
 var availableFuncs =
 {
     randomNumber : module.exports.randInt,
     randomResponse : module.exports.sample
 };
 
-function customFunc (func, params)
+function customFunc (func, params, variables, n)
 {
-    let arr = params.substr(1,params.length-2).split(',');
+    n += 1;
+    let arr = params.substr(1, params.length-2).split(',');
     arr = arr.map(p => p = module.exports.parseString(p));
+
+    for (let i=0; i<arr.length; i++)
+    {
+        arr[i] = module.exports.customStringParse(arr[i], variables, n);
+    }
+
     if (!Array.isArray(arr))
     {
         return new Error("I wasn't given a list [] for the paramaters of "+func+".");
@@ -226,11 +234,19 @@ function customFunc (func, params)
     return availableFuncs[func].apply(null, arr);
 }
 
-module.exports.customStringParse = function(string, variables)
+module.exports.customStringParse = function(string, variables, n)
 {
-    let tokens = string.match(/\$\{[^()]*\}/g);
+    if (n != undefined && n > 2)
+    {
+        return new Error("Do not nest more than two functions/variables inside of each other.");
+    }
+    if (typeof string != 'string')
+    {
+        return string;
+    }
+    let tokens = string.match(/\$\{([^(\$\{)\}]*|\$\{([^(\$\{)\}]*|\$\{[^(\$\{)\}]*\})*\})*\}/g);
     tokens = tokens.map(t => t = t.substr(2,t.length-3));
-    console.log(tokens);    
+    console.log(tokens);
     let arr;
 
     for (n=0;n<tokens.length;n++)
@@ -238,7 +254,6 @@ module.exports.customStringParse = function(string, variables)
         t = tokens[n];
         let func = t.slice(0, t.indexOf(":"));
         let newVal = '';
-        //console.log(func);
         if (t.startsWith("config:"))
         {
             if (!config[t.substr(7)]) {return new Error("Tried to access a config that doesn't exist.");}
@@ -250,7 +265,7 @@ module.exports.customStringParse = function(string, variables)
         }
         else if (availableFuncs[func] != undefined)
         {
-           newVal = customFunc(func, t.slice(t.indexOf(":")+1));
+            newVal = customFunc(func, t.slice(t.indexOf(":")+1), variables, n);
         }
 
         if (!newVal) {return new Error(`A dynamic variable ${t} didn't correspond to a valid function, config, or message/event property.`);}
@@ -262,3 +277,22 @@ module.exports.customStringParse = function(string, variables)
     }
     return string;
 };
+
+module.exports.runCustomCommand = function (command, msg, args)
+{
+    //command looks like {params:["sides"], response:"I rolled a ${sides} sided die and got a ${randomNumber:${sides}}"}
+    if (args.length < command.params.length+1)
+    {
+        return new Error("Not enough arguments were given. Arguments are: "+command.params.slice(0).join(', '));
+    }
+    let variables =
+    {
+        author : msg.author.username,
+        server : msg.guild.name
+    }
+    for (let i=0; i<command.params.length; i++)
+    {
+        variables[command.params[i]] = args[i+1];
+    }
+    msg.channel.send(module.exports.customStringParse(command.response, variables, 0));
+}
