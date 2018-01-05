@@ -13,7 +13,6 @@
     "ytdl-core":"0.18.5",
     "opusscript":"0.0.6",
     "seedrandom":"2.4.3",
-    "ffmpeg-binaries": "^3.2.2-3"
   },
   "main": "bot.js",
   "scripts": {
