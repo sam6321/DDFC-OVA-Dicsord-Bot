@@ -1,13 +1,14 @@
-require.extensions[".txt"] = function (module, filename) 
-{
-    module.exports = fs.readFileSync(filename, "utf8");
-};
-
 const Discord = require("discord.js");
 const Command = require("./core/command.js");
 const fs = require("fs");
 const funcs = require("./funcs.js");
 let bSettings = require("./core/config.js")();
+
+require.extensions[".txt"] = function (filename) 
+{
+    module.exports = fs.readFileSync(filename, "utf8");
+};
+
 
 const bot = new Discord.Client();
 let commandDispatcher = new Command.Dispatcher();
