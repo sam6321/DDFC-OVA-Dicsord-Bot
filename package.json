@@ -12,12 +12,11 @@
     "discord.js":"11.2.1",
     "ytdl-core":"0.18.5",
     "opusscript":"0.0.6",
-    "seedrandom":"2.4.3",
+    "seedrandom":"2.4.3"
   },
   "main": "bot.js",
   "scripts": {
-    "heroku-postinstall": "npm i -g pm2",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "heroku-postinstall": "npm i -g pm2"
   },
   "repository": {
     "type": "git",
