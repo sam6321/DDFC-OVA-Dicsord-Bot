@@ -1,0 +1,17 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: node:8.1.0
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm i -g eslint && npm i --save
+      - run:
+          name: ESLint Check
+          command: eslint ./
+# notify:
+#  webhooks:
+  # you need a custom webhook for this. This one posts to Clarity's Discord
+  #  - url: https://claraio-circledisc.herokuapp.com/hooks/circleci
