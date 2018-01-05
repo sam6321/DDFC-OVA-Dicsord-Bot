@@ -3,27 +3,21 @@
   "version": "1.0.0",
   "description": "A bot for the DDFC OVA Discord server, because Enra's bots are buggy.\r TODO: Literally everything.",
   "engines": {
-    "node": "7.10.1"
+    "npm": "4.x.x"
   },
   "dependencies":
   {
-    "pm2": "^2.9.1",
     "pg": "6.x",
     "discord.js":"11.2.1",
     "ytdl-core":"0.18.5",
     "opusscript":"0.0.6",
     "seedrandom":"2.4.3",
-<<<<<<< HEAD
     "redis":"2.8.0",
     "redite":"1.1.0"
-=======
-    "ffmpeg-binaries": "^3.2.2-3"
->>>>>>> ba340e4309282dceaa71add7c20549c62cca7422
   },
   "main": "bot.js",
   "scripts": {
-    "heroku-postinstall": "npm i -g pm2",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "heroku-post": "npm i -g pm2"
   },
   "repository": {
     "type": "git",

@@ -101,7 +101,7 @@ module.exports.getUserValue = function(user, valueName)
 */
 module.exports.parseString = function(string)
 {
-    let out = '';
+    let out = "";
     switch (string)
     {
         case "null":
@@ -113,7 +113,7 @@ module.exports.parseString = function(string)
         case "false":
             return false
         default:
-            if (parseInt(string)+'' == string)
+            if (parseInt(string)+"" == string)
             {
                 return parseInt(string);
             }
@@ -249,7 +249,7 @@ function customFunc (func, params, variables, n)
 
     if (!Array.isArray(arr))
     {
-        return new Error("I wasn't given a list [] for the paramaters of "+func+".");
+        return new Error(`I wasn't given a list [] for the paramaters of ${func}.`);
     }
     if (arr.length < availableFuncs[func].length)
     {
@@ -264,7 +264,7 @@ module.exports.customStringParse = function(string, variables, n)
     {
         return new Error("Do not nest more than two functions/variables inside of each other.");
     }
-    if (typeof string != 'string')
+    if (typeof string != "string")
     {
         return string;
     }
@@ -280,7 +280,7 @@ module.exports.customStringParse = function(string, variables, n)
         let t = tokens[n];
         console.log(t);
         let func = t.slice(0, t.indexOf(":"));
-        let newVal = '';
+        let newVal = "";
         if (t.startsWith("config:"))
         {
             if (!config[t.substr(7)]) {return new Error("Tried to access a config that doesn't exist.");}
@@ -308,7 +308,7 @@ module.exports.runCustomCommand = function (command, msg, args)
     //command looks like {params:["sides"], response:"I rolled a ${sides} sided die and got a ${randomNumber:[1,${sides}]}"}
     if (args.length < command.params.length+1)
     {
-        return new Error("Not enough arguments were given. Arguments are: "+command.params.slice(0).join(', '));
+        return new Error(`Not enough arguments were given. Arguments are: ${command.params.slice(0).join(', ')}`);
     }
     let variables =
     {
