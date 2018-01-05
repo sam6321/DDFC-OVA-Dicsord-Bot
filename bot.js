@@ -10,11 +10,6 @@ const fs = require('fs');
 const funcs = require('./funcs.js');
 let bSettings = require("./core/config.js")();
 
-require.extensions[".txt"] = function (filename) 
-{
-    module.exports = fs.readFileSync(filename, "utf8");
-};
-
 const bot = new Discord.Client();
 let commandDispatcher = new Command.Dispatcher();
 commandDispatcher.addDirectory("./Commands"); // Add all commands from this directory in to the dispatcher.
