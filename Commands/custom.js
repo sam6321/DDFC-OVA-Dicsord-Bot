@@ -30,6 +30,11 @@ exports.call = function (context)
     {
     	settings.customCommands = {};
     }
+	
+    if (params[0] == '')
+    {
+    	params.length = 0;
+    }
 
     settings.customCommands[name] = {params:params, response:response};
 
