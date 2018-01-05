@@ -2,7 +2,7 @@ const MusicContext = require("../music/context.js");
 
 exports.description = "Plays music from Youtube. Has three subcommands: 'play', 'skip', and 'list'";
 exports.info = "Plays music from Youtube.\n'play' - Specify a Youtube video URL to play. If a video is already playing, it will be added to the queue.\n'skip' - Vote to skip the current video.\n'list' - List all videos that are currently in the queue";
-exports.usage = "(prefix)music play (url), (prefix)music skip, (prefix)music list";
+exports.usage = "*music play (url), *music skip, *music list";
 exports.category = "music";
 
 let contexts = {};

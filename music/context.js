@@ -239,16 +239,8 @@ class MusicContext
             return;
         }
 
-        if (queueItem.loaded)
-        {
-            // Play the item immediately, as its info is already loaded.
-            playQueueItem(queueItem);
-        }
-        else
-        {
-            // Wait for the info to load before playing.
-            queueItem.on("load", playQueueItem);
-        }
+        // Once the info has loaded for the queue item, play it.
+        queueItem.info.then(() => playQueueItem(queueItem));
     }
 
     /**
