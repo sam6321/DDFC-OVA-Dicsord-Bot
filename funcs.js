@@ -225,7 +225,7 @@ function customFunc (func, params, variables, n)
 
     if (!Array.isArray(arr))
     {
-        return new Error("I wasn't given a list [] for the paramaters of "+func+".");
+        return new Error(`I wasn't given a list [] for the paramaters of ${func}.`);
     }
     if (arr.length < availableFuncs[func].length)
     {
