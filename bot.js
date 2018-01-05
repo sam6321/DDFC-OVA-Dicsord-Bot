@@ -32,6 +32,12 @@ messageHandlers.text = function (msg)
     {
         return; //return if the command is disabled in the guild
     }
+    
+    if (guild_settings.customCommands[args[0]])
+    {
+        funcs.runCustomCommand(guild_settings.customCommands[args[0]], msg, args); 
+        return;
+    }
 
     commandDispatcher.dispatch(args[0], bot, msg, args, guild_settings);
 };
