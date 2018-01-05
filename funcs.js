@@ -278,10 +278,7 @@ module.exports.customStringParse = function(string, variables, n)
     for (let n=0;n<tokens.length;n++)
     {
         let t = tokens[n];
-<<<<<<< HEAD
         console.log(t);
-=======
->>>>>>> ba340e4309282dceaa71add7c20549c62cca7422
         let func = t.slice(0, t.indexOf(":"));
         let newVal = '';
         if (t.startsWith("config:"))
@@ -323,8 +320,4 @@ module.exports.runCustomCommand = function (command, msg, args)
         variables[command.params[i]] = args[i+1];
     }
     msg.channel.send(module.exports.customStringParse(command.response, variables, 0));
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> ba340e4309282dceaa71add7c20549c62cca7422
