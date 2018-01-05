@@ -283,7 +283,7 @@ module.exports.runCustomCommand = function (command, msg, args)
     //command looks like {params:["sides"], response:"I rolled a ${sides} sided die and got a ${randomNumber:[1,${sides}]}"}
     if (args.length < command.params.length+1)
     {
-        return new Error("Not enough arguments were given. Arguments are: "+command.params.slice(0).join(', '));
+        return new Error(`Not enough arguments were given. Arguments are: ${command.params.slice(0).join(', ')}`);
     }
     let variables =
     {
