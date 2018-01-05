@@ -254,7 +254,6 @@ module.exports.customStringParse = function(string, variables, n)
     for (let n=0;n<tokens.length;n++)
     {
         let t = tokens[n];
-        console.log(t);
         let func = t.slice(0, t.indexOf(":"));
         let newVal = '';
         if (t.startsWith("config:"))
