@@ -205,7 +205,6 @@ module.exports.formatTime = function (inSeconds)
     return hours + ":" + ('0' + minutes.toFixed(0)).slice(-2) + ":" + ('0' + seconds.toFixed(0)).slice(-2);
 };
 
-
 var availableFuncs =
 {
     randomNumber : module.exports.randInt,
@@ -216,12 +215,13 @@ function customFunc (func, params, variables, n)
 {
     n += 1;
     let arr = params.substr(1, params.length-2).split(',');
-    arr = arr.map(p => p = module.exports.parseString(p));
 
     for (let i=0; i<arr.length; i++)
     {
         arr[i] = module.exports.customStringParse(arr[i], variables, n);
     }
+
+    arr = arr.map(p => p = module.exports.parseString(p));
 
     if (!Array.isArray(arr))
     {
@@ -245,13 +245,16 @@ module.exports.customStringParse = function(string, variables, n)
         return string;
     }
     let tokens = string.match(/\$\{([^(\$\{)\}]*|\$\{([^(\$\{)\}]*|\$\{[^(\$\{)\}]*\})*\})*\}/g);
-    tokens = tokens.map(t => t = t.substr(2,t.length-3));
-    console.log(tokens);
-    let arr;
-
-    for (n=0;n<tokens.length;n++)
+    if (!tokens)
     {
-        t = tokens[n];
+        return string;
+    }
+    tokens = tokens.map(t => t = t.substr(2,t.length-3));
+    let arr;
+    for (let n=0;n<tokens.length;n++)
+    {
+        let t = tokens[n];
+        console.log(t);
         let func = t.slice(0, t.indexOf(":"));
         let newVal = '';
         if (t.startsWith("config:"))
@@ -267,20 +270,18 @@ module.exports.customStringParse = function(string, variables, n)
         {
             newVal = customFunc(func, t.slice(t.indexOf(":")+1), variables, n);
         }
-
         if (!newVal) {return new Error(`A dynamic variable ${t} didn't correspond to a valid function, config, or message/event property.`);}
         t = t.replace(/\[/, "\\[");
         t = t.replace(/\]/, "\\]");
-        let reg = new RegExp ("\\$\\{"+t+"\\}", 'g');
+        let reg = new RegExp ("\\$\\{"+module.exports.customStringParse(t, variables, n)+"\\}", 'g');
         string = string.replace(reg, newVal);
-        console.log(t+" : "+newVal);
     }
     return string;
 };
 
 module.exports.runCustomCommand = function (command, msg, args)
 {
-    //command looks like {params:["sides"], response:"I rolled a ${sides} sided die and got a ${randomNumber:${sides}}"}
+    //command looks like {params:["sides"], response:"I rolled a ${sides} sided die and got a ${randomNumber:[1,${sides}]}"}
     if (args.length < command.params.length+1)
     {
         return new Error("Not enough arguments were given. Arguments are: "+command.params.slice(0).join(', '));
