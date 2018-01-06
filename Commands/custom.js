@@ -15,6 +15,13 @@ exports.call = function (context)
         context.send("This command can only be used from within a guild.");
         return;
     }
+    
+    if (args[1] == 'new')
+    {
+        let alias = require("../Commands/alias.js");
+        context.setArgs("*alias " + args[2] + "*custom" + args.slice(3).join(" "));
+        alias.call(context);
+    }
 
     let joinedArgs = args.slice(1).join(' ');
     let matches = joinedArgs.match(/\[.*?\]/g);
