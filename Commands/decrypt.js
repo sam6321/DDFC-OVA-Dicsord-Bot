@@ -8,7 +8,7 @@ exports.category = "misc";
 
 exports.call = function (context)
 {
-    let text = encryption('decrypt', context.author, context.channel, context.args);
+    let text = encryption('decrypt');
 
     if(text)
     {

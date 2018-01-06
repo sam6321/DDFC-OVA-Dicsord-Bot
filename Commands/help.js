@@ -13,7 +13,7 @@ exports.call = function (context)
 
     if(context.guild)
     {
-        embed.setDescription(`**The prefix for this server is ${context.guildSettings.prefix}**\nType '*help (command name)' to see the usage of each command.\n\n`);
+        embed.setDescription(`**The prefix for this server is ${context.guildConfig.prefix}**\nType '*help (command name)' to see the usage of each command.\n\n`);
     }
     else
     {
@@ -32,7 +32,7 @@ exports.call = function (context)
                 {
                     let filename = file.substr(0, file.length - 3);
                     let m = require(`./${file}`);
-                    desc += "__" + context.guildSettings.prefix + filename + "__: " + m.description + "\n";
+                    desc += "__" + context.guildConfig.prefix + filename + "__: " + m.description + "\n";
                 }
 
                 embed.setDescription(desc);
@@ -42,8 +42,8 @@ exports.call = function (context)
         else if (!fs.existsSync("../Commands/" + args[1] + ".js"))
         {
             let m = require("../Commands/" + args[1] + ".js");
-            embed.setTitle(context.guildSettings.prefix + args[1]);
-            embed.setDescription(m.info.replace(/\*/g , context.guildSettings.prefix) + "\n__Usage:__ " + m.usage + "\n\n".replace(/\*/g , context.guildSettings.prefix));
+            embed.setTitle(context.guildConfig.prefix + args[1]);
+            embed.setDescription(m.info.replace(/\*/g , context.guildConfig.prefix) + "\n__Usage:__ " + m.usage + "\n\n".replace(/\*/g , context.guildConfig.prefix));
             context.send({embed});
         }
         else
@@ -67,7 +67,7 @@ exports.call = function (context)
             {
                 let filename = file.substr(0, file.length - 3);
                 let m = require(`./${file}`);
-                desc[m.category] += "__" + context.guildSettings.prefix + filename + "__\n" + m.description.replace(/\*/g , context.guildSettings.prefix) + "\n\n";
+                desc[m.category] += "__" + context.guildConfig.prefix + filename + "__\n" + m.description.replace(/\*/g , context.guildConfig.prefix) + "\n\n";
             }
 
             embed.addField("Miscellaneous", desc.misc);

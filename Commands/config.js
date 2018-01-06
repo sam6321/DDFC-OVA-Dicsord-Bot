@@ -12,7 +12,7 @@ exports.category = "administration";
 exports.call = function (context)
 {
     let args = context.args;
-    let guild_settings = context.guildSettings;
+    let guild_settings = context.guildConfig;
     let desc = '';
     let embed = new Discord.RichEmbed();
 
@@ -105,6 +105,4 @@ exports.call = function (context)
             context.send("Unknown config command.");
             break;
     }
-
-    fs.writeFile(funcs.guildfolder(context.guild)+"/settings.json", JSON.stringify(guild_settings,null,4), function(){});
 };

@@ -1,4 +1,4 @@
-const bSettings = require("../core/config.js")();
+const bSettings = require("../core/globalConfig.js")();
 
 exports.description = "Bot developer command.";
 exports.info = exports.description;

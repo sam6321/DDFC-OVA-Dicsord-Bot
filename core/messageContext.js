@@ -1,4 +1,3 @@
-const funcs = require('../funcs.js');
 let bSettings = require("./globalConfig.js")();
 
 class MessageContext
@@ -101,7 +100,6 @@ const messageContextMap = {
 /**
  * Creates a message context for the given message
  * @param client
- * @param handler
  * @param msg
  * @returns {GroupMessageContext|DMMessageContext|GuildMessageContext}
  */

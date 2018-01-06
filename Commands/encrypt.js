@@ -14,7 +14,7 @@ exports.call = function (context)
         context.msg.delete();
     }
 
-    let text = encryption('encrypt', context.author, context.channel, context.args);
+    let text = encryption('encrypt', context);
 
     if(text)
     {

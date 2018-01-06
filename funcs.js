@@ -1,40 +1,19 @@
 const fs = require('fs');
 const path = require('path');
 const bSettings = require("./core/globalConfig.js")();
-/*
-var redis = require("redis"),
-    client = redis.createClient(process.env.REDIS_URL);
-const Redite = require("redite");
-const db = new Redite({client});
-*/
-const USER_VALUE_PATH = './user_values.json';
 
-module.exports.setUserValue = function (user, valueName, value)
-{
-    db.users[user.id][valueName].set(value);
-};
-/*
-module.exports.getUserValue = function(user, valueName)
-{
-    if (await db.users[user.id].has(valueName));
-    { 
-        return await db.users[user.id][valueName].get;
-    }
-};
-*/
 module.exports.parseString = function(string)
 {
-    let out = '';
     switch (string)
     {
         case "null":
             return null;
         case "undefined":
-            return undefined
+            return undefined;
         case "true":
             return true;
         case "false":
-            return false
+            return false;
         default:
             if (parseInt(string)+'' == string)
             {
@@ -45,7 +24,8 @@ module.exports.parseString = function(string)
                 return string;
             }
     }
-}
+};
+
 module.exports.mentiontoID = function(string, members)
 {
     if (string.startsWith("<"))

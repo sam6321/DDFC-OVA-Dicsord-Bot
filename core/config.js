@@ -10,11 +10,6 @@ const BASE_USER_PATH = "./Users/";
 const GUILD_CONFIG_FILE_NAME = "guild_config.json";
 const USER_CONFIG_FILE_NAME = "user_config.json";
 
-function getInitialGuildSettings (guild)
-{
-
-}
-
 class ConfigFile
 {
     constructor (path)
@@ -124,5 +119,29 @@ class UserConfigFile extends ConfigFile
     }
 }
 
+/*
+TODO: Redis config classes can be added here.
+var redis = require("redis"),
+    client = redis.createClient(process.env.REDIS_URL);
+const Redite = require("redite");
+const db = new Redite({client});
+
+const USER_VALUE_PATH = './user_values.json';
+
+module.exports.setUserValue = function (user, valueName, value)
+{
+    db.users[user.id][valueName].set(value);
+};
+
+module.exports.getUserValue = function(user, valueName)
+{
+    if (await db.users[user.id].has(valueName));
+    {
+        return await db.users[user.id][valueName].get;
+    }
+};
+*/
+
 module.exports.GuildConfigFile = GuildConfigFile;
 module.exports.UserConfigFile = UserConfigFile;
+
