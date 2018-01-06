@@ -3,6 +3,8 @@ exports.usage = "*alias (name) (nothing / command string / delete)";
 exports.info = module.exports.description;
 exports.category = "administration";
 
+// TODO: Prevent people from overriding inbuilt functions with aliases.
+
 exports.call = function (context)
 {
     if (!context.guild)
