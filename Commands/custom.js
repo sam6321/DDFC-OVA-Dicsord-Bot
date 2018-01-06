@@ -1,69 +1,103 @@
-const runCustomCommand = require("../core/customCommand.js");
+const Parser = require('../custom/parser.js');
 
 exports.description = "Run a custom command.";
 exports.usage = "*custom (arguments) (response)";
 exports.info = exports.usage+"\nExample: *custom [sides] I rolled a ${sides} sided die and got a ${randomNumber:[1,${sides}]}";
 exports.category = "administration";
 
-/*
-Language def:
-
-value => any
-[value*|e] => Parameter list
-${value|functionCall} => valueResolve
-Parameter list: name => function call
- */
-
-exports.call = function (context)
+function resolveVariables (initialVariables, parametersBlock, argumentsBlock)
 {
-    let args = context.args;
-    let settings = context.guildConfig;
+    let variables = {},
+        args = [],
+        params = [];
 
-    if (!settings)
+    Object.assign(variables, initialVariables); // Copy over the initial variables first
+
+    // Split the arguments using spaces
+    if (argumentsBlock)
     {
-        context.send("This command can only be used from within a guild.");
-        return;
+        args = argumentsBlock.split(' ').map(a => a.trim());
     }
 
-    // Get the arguments to this and pass them to the custom command function to parse
-    let joinedArgs = args.slice(1).join(' ');
+    // Split the parameters using commas
+    if (parametersBlock)
+    {
+        params = parametersBlock.split(',').map(p => p.trim());
+    }
 
-    runCustomCommand(context, joinedArgs);
-};
+    if (args.length !== params.length)
+    {
+        throw new Error("Incorrect number of arguments given. Expected: " + params.length + ". Got: " + args.length);
+    }
 
+    // Now, copy in the variables defined by the arguments
+    for(let i = 0; i < params.length; i++)
+    {
+        variables[params[i]] = args[i];
+    }
 
-
-/*
-let joinedArgs = args.slice(1).join(' ');
-let matches = joinedArgs.match(/\[.*?\]/g);
-
-if (!matches.length)
-{
-    context.send("Custom command params are not well formed. They must take the form [param1, param2, ...].");
-    return;
+    return variables;
 }
 
-// Split each of the fields in the first match, to get an array of values from within the square brackets e.g. "[p1, p2]" => [p1, p2]
-let params = matches[0].substr(1, matches[0].length - 2).split(',').map(p => p.trim());
+function runCustomCommand (context)
+{
+    // The code for this should be in three parts
+    // 1: A starting parameter names block, e.g. [blah1, blah2, blah3]
+    // 2: A code block, starting and ending with "
+    // 3: A set of parameters that should be separated by spaces at the end.
+    let text = context.args.slice(1).join(' ');
+    let parameterBlock = "";
+    let codeBlock = "";
 
-let response = args.slice(1, -params.length) // Remove the last params.length number of arguments from the back of the response
-    .join(' ') // Join to a string.
-    .slice(matches[0].length + 1) // Remove the params block from the front of the response. This will be as long as the first match.
-    .trim(); // Remove any remaining whitespace around the response.
+    let initialVariables =
+    {
+        author : context.author.username,
+        server : context.guild.name
+    };
 
-// Form the command parameters and call it.
-runCustomCommand(context, {
-    params: params,
-    response: response
-});*/
+    if (text[0] === '[')
+    {
+        // We should we start with a parameters block, so pull that out
+        let end = text.indexOf(']');
 
-/*
-const runCustomCommand = require("../core/customCommand.js");
+        if (end === -1)
+        {
+            throw new Error("Parameter block open without a matching close ]");
+        }
 
-exports.description = "Run a custom command.";
-exports.usage = "*custom (arguments) (response)";
-exports.info = exports.usage+"\nExample: *custom [sides] I rolled a ${sides} sided die and got a ${randomNumber:[1,${sides}]}";
-exports.category = "administration";
+        parameterBlock = text.slice(1, end);
+        text = text.slice(end + 1).trim(); // Remove the parameter block from the text.
+    }
+
+    if (text[0] === '"')
+    {
+        // We're now looking at the main code block. This has to start and end with ", but we only want to consider the very first and very final "
+        let end = text.lastIndexOf('"');
+
+        if (end === -1)
+        {
+            throw new Error("Code block open without a matching close \"");
+        }
+
+        codeBlock = text.slice(1, end);
+        text = text.slice(end + 1).trim(); // Remove the code block from the text.
+    }
+    else
+    {
+        throw new Error("Custom command without code block.");
+    }
+
+    // The final things left in the text should be the arguments, which give values to the parameters.
+
+    // Assign values to the variable names given by the parameter block, from the values given in the arguments block.
+    let variables = resolveVariables(initialVariables, parameterBlock, text);
+
+    // Now, make a parse tree from the ${} blocks found in the code portion
+    let parser = new Parser(codeBlock);
+    let parseTree = parser.run();
+
+    context.send(parseTree.evaluate(variables));
+}
 
 exports.call = function (context)
 {
@@ -76,27 +110,20 @@ exports.call = function (context)
         return;
     }
 
-    let joinedArgs = args.slice(1).join(' ');
-    let matches = joinedArgs.match(/\[.*?\]/g);
-
-    if (!matches.length)
+    if (args[1] === 'new')
     {
-        context.send("Custom command params are not well formed. They must take the form [param1, param2, ...].");
+        let alias = require("./alias.js");
+        context.setArgs("*alias " + args[2] + " *custom " + args.slice(3).join(" "));
+        alias.call(context);
         return;
     }
 
-    // Split each of the fields in the first match, to get an array of values from within the square brackets e.g. "[p1, p2]" => [p1, p2]
-    let params = matches[0].substr(1, matches[0].length - 2).split(',').map(p => p.trim());
-
-    let response = args.slice(1, -params.length) // Remove the last params.length number of arguments from the back of the response
-        .join(' ') // Join to a string.
-        .slice(matches[0].length + 1) // Remove the params block from the front of the response. This will be as long as the first match.
-        .trim(); // Remove any remaining whitespace around the response.
-
-    // Form the command parameters and call it.
-    runCustomCommand(context, {
-        params: params,
-        response: response
-    });
+    try
+    {
+        runCustomCommand(context);
+    }
+    catch(e)
+    {
+        context.send(e.message);
+    }
 };
- */
