@@ -18,7 +18,7 @@ exports.call = function (context)
     
     if (args[1] == 'new')
     {
-        let alias = require("../Commands/alias.js");
+        let alias = require("./alias.js");
         context.setArgs("*alias " + args[2] + "*custom" + args.slice(3).join(" "));
         alias.call(context);
     }
