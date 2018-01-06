@@ -6,30 +6,30 @@ const availableFuncs =
     randomResponse : funcs.sample
 };
 
-function customFunc (func, params, variables, n)
+function customFunc (func, params, variables, n, context)
 {
     n += 1;
     let arr = params.substr(1, params.length-2).split(',');
 
     for (let i=0; i<arr.length; i++)
     {
-        arr[i] = customStringParse(arr[i], variables, n);
+        arr[i] = customStringParse(arr[i], variables, n, context);
     }
 
     arr = arr.map(p => funcs.parseString(p));
-
+    arr.push(context);
     if (!Array.isArray(arr))
     {
         return new Error("I wasn't given a list [] for the paramaters of "+func+".");
     }
-    if (arr.length < availableFuncs[func].length)
+    if (arr.length-1 < availableFuncs[func].length)
     {
         return new Error(`${func} takes ${availableFuncs[func].length} parameters, but I was given ${arr.length}.`);
     }
     return availableFuncs[func].apply(null, arr);
 }
 
-function customStringParse (string, variables, n, guildConfig)
+function customStringParse (string, variables, n, context)
 {
     if (n !== undefined && n > 2)
     {
@@ -54,8 +54,8 @@ function customStringParse (string, variables, n, guildConfig)
         let newVal = '';
         if (t.startsWith("config:"))
         {
-            if (!guildConfig[t.substr(7)]) {return new Error("Tried to access a config that doesn't exist.");}
-            newVal = guildConfig[t.substr(7)];
+            if (!context.guildConfig[t.substr(7)]) {return new Error("Tried to access a config that doesn't exist.");}
+            newVal = context.guildConfig[t.substr(7)];
         }
         else if (variables[t] !== undefined)
         {
@@ -63,12 +63,12 @@ function customStringParse (string, variables, n, guildConfig)
         }
         else if (availableFuncs[func] !== undefined)
         {
-            newVal = customFunc(func, t.slice(t.indexOf(":")+1), variables, n);
+            newVal = customFunc(func, t.slice(t.indexOf(":")+1), variables, n, context);
         }
         if (!newVal) {return new Error(`A dynamic variable ${t} didn't correspond to a valid function, config, or message/event property.`);}
         t = t.replace(/\[/, "\\[");
         t = t.replace(/\]/, "\\]");
-        let reg = new RegExp ("\\$\\{"+customStringParse(t, variables, n, guildConfig)+"\\}", 'g');
+        let reg = new RegExp ("\\$\\{"+customStringParse(t, variables, n, context)+"\\}", 'g');
         string = string.replace(reg, newVal);
     }
     return string;
@@ -97,7 +97,7 @@ function runCustomCommand (context, command)
         variables[command.params[i]] = args[i];
     }
 
-    context.send(customStringParse(command.response, variables, 0, context.guildConfig));
+    context.send(customStringParse(command.response, variables, 0, context));
 }
 
 module.exports = runCustomCommand;
