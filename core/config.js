@@ -42,7 +42,16 @@ class ConfigFile
         else
         {
             let config = await fse.readFile(this.path, 'utf8');
-            this.config = JSON.parse(config);
+
+            if (!config)
+            {
+                console.error("Warning: Config file " + this.path + " is empty. Recreating...");
+                this.config = await this.initial();
+            }
+            else
+            {
+                this.config = JSON.parse(config);
+            }
         }
 
         return this.config;
@@ -139,6 +148,40 @@ module.exports.getUserValue = function(user, valueName)
     {
         return await db.users[user.id][valueName].get;
     }
+};
+*/
+
+/*
+module.exports.guildSettings = async function (guild)
+{
+    let textChannel = guild.channels.find('type', 'text');
+
+    if(!textChannel)
+    {
+        console.error(`funcs: Guild ${guild.name} does not have a text channel!`);
+    }
+    if (await db.guilds.has(guild.id))
+    {
+        return await db.guilds[guild.id].get;
+    }
+
+    const init_settings =
+    {
+        banned_users    :   [],
+        custom_commands :   [],
+        prefix          :   bSettings.prefix,
+        admins          :   [guild.ownerID],
+        enabled_events  :   [],
+        greet           :   true,
+        greet_channel   :   textChannel.id, // defaultChannel is deprecated, just default to the very first channel.
+        mod_channel     :   null,
+        disabled        :   [],
+        aliases         :   {}
+    };
+    console.log(`Creating db entry for guild: ${guild.name}`);
+
+    db.guilds[guild.id].set(init_settings);
+    return init_settings;
 };
 */
 

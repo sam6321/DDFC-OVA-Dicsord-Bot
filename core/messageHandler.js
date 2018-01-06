@@ -41,7 +41,7 @@ class MessageHandler
             {
                 // Found an alias, use it as the context's arguments instead.
                 // Append any other additional arguments on to the end of the new args.
-                context.setArgs(alias + ' ' + context.args.slice(1));
+                context.setArgs(alias + ' ' + context.args.slice(1).join(' '));
             }
         }
 

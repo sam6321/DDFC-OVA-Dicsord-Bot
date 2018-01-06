@@ -57,7 +57,7 @@ bot.on('message', (msg) =>
 
             msg.channel.send(`Whoops! Something went wrong executing your command. This has been logged. ID: ${id}`);
 
-            fs.appendFile("./log.txt", report);
+            fs.appendFile("./log.txt", report, console.error);
             console.error(err);
     });
 });
