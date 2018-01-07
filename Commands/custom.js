@@ -40,7 +40,10 @@ function resolveVariables (initialVariables, parametersBlock, argumentsBlock)
         args = args.map(a => a.trim());
     }
 
-
+    if (args.length !== params.length)
+    {
+        throw new Error("Incorrect number of arguments given. Expected: " + params.length + ". Got: " + args.length);
+    }
 
     // Now, copy in the variables defined by the arguments
     for(let i = 0; i < params.length; i++)

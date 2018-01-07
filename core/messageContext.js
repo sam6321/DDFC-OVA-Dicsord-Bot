@@ -41,7 +41,16 @@ class MessageContext
 
     send (...response)
     {
-        return this.channel.send(...response);
+        // Filter out all empty strings from the response
+        response = response.filter(r => !(typeof r === 'string' && r.length === 0));
+
+        if (!response.length)
+        {
+            return; // Nothing to send.
+        }
+
+        return this.channel.send(...response)
+            .catch(err => console.error("Error sending message: " + err.message));
     }
 }
 
