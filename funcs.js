@@ -157,9 +157,16 @@ module.exports.requiredPerms = function ()
 
     for (let i=0; i<arguments.length-1; i++)
     {
-        if (arguments[i] == "botAdmin" && !context.guildConfig.admins.includes(context.author.id))
+        if (arguments[i] == "botAdmin")
         {
-            throw new Error("User is not an administrator of the bot. Bot administrators are defined in the server configuration.");
+            if (!context.guildConfig.admins.includes(context.author.id))
+            {
+                throw new Error("User is not an administrator of the bot. Bot administrators are defined in the server configuration.");
+            }
+            else
+            {
+                continue;
+            }
         }
         if (!context.member.hasPermission(permFlags[arguments[i]]))
         {
