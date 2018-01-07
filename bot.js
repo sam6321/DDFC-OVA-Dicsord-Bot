@@ -42,7 +42,7 @@ bot.on('ready', () =>
 
 bot.on('message', (msg) =>
 {
-    if (msg.author === bot.user)
+    if (msg.author.id === bot.user.id)
     {
         return; // Never respond to ourself.
     }

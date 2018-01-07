@@ -93,7 +93,7 @@ function runCustomCommand (context)
     let variables = resolveVariables(initialVariables, parameterBlock, text);
 
     // Now, make a parse tree from the ${} blocks found in the code portion
-    let parser = new Parser(codeBlock);
+    let parser = new Parser(codeBlock, context);
     let parseTree = parser.run();
 
     context.send(parseTree.evaluate(variables));

@@ -2,6 +2,18 @@ const fs = require('fs');
 const path = require('path');
 const bSettings = require("./core/globalConfig.js")();
 
+const permFlags =
+{
+    banUsers : "BAN_MEMBERS",
+    admin : "ADMINISTRATOR",
+    kickUsers : "KICK_MEMBERS",
+    mentionEveryone : "MENTION_EVERYONE",
+    manageChannels : "MANAGE_CHANNELS",
+    manageServer : "MANAGE_GUILD",
+    manageNicks : "MANAGE_NICKNAMES",
+    manageRoles : "MANAGE_ROLES"
+}
+
 module.exports.parseString = function(string)
 {
     switch (string)
@@ -45,6 +57,7 @@ module.exports.mentiontoID = function(string, members)
         }
     }
     return string;
+
 
 }
 module.exports.IDtoString = function(string, guild)
@@ -131,3 +144,27 @@ module.exports.formatTime = function (inSeconds)
 
     return hours + ":" + ('0' + minutes.toFixed(0)).slice(-2) + ":" + ('0' + seconds.toFixed(0)).slice(-2);
 };
+
+module.exports.setConfig = function (name, value, context)
+{
+    context.guildConfig[name] = module.exports.parseString(value);
+    return "";
+};
+
+module.exports.requiredPerms = function ()
+{
+    let context = arguments[arguments.length-1];
+
+    for (let i=0; i<arguments.length-1; i++)
+    {
+        if (arguments[i] == "botAdmin" && !context.guildConfig.admins.includes(context.author.id))
+        {
+            throw new Error("User is not an administrator of the bot. Bot administrators are defined in the server configuration.");
+        }
+        if (!context.member.hasPermission(permFlags[arguments[i]]))
+        {
+            throw new Error(`User is missing permission ${arguments[i]}`);
+        }
+    }
+    return "";
+}

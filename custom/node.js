@@ -3,7 +3,9 @@ const funcs = require("../funcs.js");
 const availableFuncs =
 {
     randomNumber : funcs.randInt,
-    randomResponse : funcs.sample
+    randomResponse : funcs.sample,
+    setConfig : funcs.setConfig,
+    checkPermissions : funcs.requiredPerms
 };
 
 /**
@@ -82,10 +84,11 @@ class VariableParseNode extends ParseNode
 
 class FunctionParseNode extends ParseNode
 {
-    constructor (name)
+    constructor (name, ctx)
     {
         super();
         this.name = name;
+        this.ctx = ctx;
     }
 
     evaluate (globalParams, context)
@@ -112,13 +115,13 @@ class FunctionParseNode extends ParseNode
 
             return stringValue;
         });
-
+        parameters.push(this.ctx);
         // Call the function with the evaluated values of our children.
         let result = func.apply(null, parameters);
 
         if (result === undefined || result === null || isNaN(result))
         {
-            context.send("Warning: Value returned from " + this.name + " is undefined, null or NaN.");
+            this.ctx.send("Warning: Value returned from " + this.name + " is undefined, null or NaN.");
         }
 
         return result;

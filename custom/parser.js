@@ -3,9 +3,10 @@ const Node = require('./node.js');
 
 class Parser
 {
-    constructor (codeBlock)
+    constructor (codeBlock, ctx)
     {
         this.lexer = new Lexer(codeBlock);
+        this.ctx = ctx;
     }
 
     expect (tokenType)
@@ -92,7 +93,7 @@ class Parser
         switch (identifier.secondaryType)
         {
             case "function":
-                newScope = new Node.Function(identifier.value);
+                newScope = new Node.Function(identifier.value, this.ctx);
                 this.parseFunction(newScope);
                 break;
 
