@@ -96,7 +96,7 @@ function runCustomCommand (context)
     let parser = new Parser(codeBlock);
     let parseTree = parser.run();
 
-    context.send(parseTree.evaluate(variables));
+    context.send(parseTree.evaluate(variables, context));
 }
 
 exports.call = function (context)

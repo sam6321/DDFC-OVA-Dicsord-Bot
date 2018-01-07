@@ -109,7 +109,7 @@ class Parser
 
     run ()
     {
-        let scope = new Node.Global();
+        let scope = new Node.Group();
 
         while (true)
         {

@@ -29,8 +29,8 @@ class ParseNode
     }
 }
 
-// The global part of this needs to just concat everything together and return it.
-class GlobalParseNode extends ParseNode
+// Group parse nodes simply concatenate the values of all of their children.
+class GroupParseNode extends ParseNode
 {
     constructor ()
     {
@@ -116,16 +116,16 @@ class FunctionParseNode extends ParseNode
         // Call the function with the evaluated values of our children.
         let result = func.apply(null, parameters);
 
-        if (result === undefined || result === null || isNaN(result))
+        if (result === undefined || result === null)
         {
-            context.send("Warning: Value returned from " + this.name + " is undefined, null or NaN.");
+            context.send("Warning: Value returned from " + this.name + " is undefined, or null.");
         }
 
         return result;
     }
 }
 
-module.exports.Global = GlobalParseNode;
+module.exports.Group = GroupParseNode;
 module.exports.Immediate = ImmediateParseNode;
 module.exports.Variable = VariableParseNode;
 module.exports.Function = FunctionParseNode;
