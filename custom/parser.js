@@ -3,10 +3,9 @@ const Node = require('./node.js');
 
 class Parser
 {
-    constructor (codeBlock, ctx)
+    constructor (codeBlock)
     {
         this.lexer = new Lexer(codeBlock);
-        this.ctx = ctx;
     }
 
     expect (tokenType)
@@ -51,7 +50,6 @@ class Parser
                 case "${":
                     // Ok, we're parsing an expression
                     this.parseExpression(scope);
-                    this.expect("}");
                     break;
 
                 case "id":
@@ -93,7 +91,7 @@ class Parser
         switch (identifier.secondaryType)
         {
             case "function":
-                newScope = new Node.Function(identifier.value, this.ctx);
+                newScope = new Node.Function(identifier.value);
                 this.parseFunction(newScope);
                 break;
 
@@ -106,6 +104,8 @@ class Parser
         }
 
         scope.addChild(newScope);
+
+        this.expect("}");
     }
 
     run ()
@@ -133,7 +133,6 @@ class Parser
                 case "${":
                     // This is an expression ( ${} ) so it needs to be parsed in to something.
                     this.parseExpression(scope);
-                    this.expect("}");
                     break;
 
                 default:

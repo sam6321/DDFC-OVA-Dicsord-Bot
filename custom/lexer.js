@@ -195,6 +195,12 @@ class Lexer
                     this.setToken("]");
                     this.consume(1);
                 }
+                else
+                {
+                    // treat as raw string
+                    this.lexRawString();
+                }
+
                 break;
 
             case ",":
@@ -202,6 +208,11 @@ class Lexer
                 {
                     this.setToken(",");
                     this.consume(1);
+                }
+                else
+                {
+                    // treat as raw string
+                    this.lexRawString();
                 }
                 break;
 

@@ -13,22 +13,34 @@ function resolveVariables (initialVariables, parametersBlock, argumentsBlock)
 
     Object.assign(variables, initialVariables); // Copy over the initial variables first
 
-    // Split the arguments using spaces
-    if (argumentsBlock)
-    {
-        args = argumentsBlock.split(' ').map(a => a.trim());
-    }
-
     // Split the parameters using commas
     if (parametersBlock)
     {
         params = parametersBlock.split(',').map(p => p.trim());
     }
 
-    if (args.length !== params.length)
+    // Split the arguments using spaces
+    if (params.length && argumentsBlock)
     {
-        throw new Error("Incorrect number of arguments given. Expected: " + params.length + ". Got: " + args.length);
+        let splitArgs = argumentsBlock.split(' ');
+
+        if (splitArgs.length < params.length)
+        {
+            throw new Error("Incorrect number of arguments given. Expected: " + params.length + ". Got: " + splitArgs.length);
+        }
+
+        // Pull off single arguments, separated by spaces, for each parameter.
+        for(let i = 0; i < params.length - 1; ++i)
+        {
+            args.push(splitArgs[i]);
+        }
+
+        // Then group all remaining arguments together in to one string for the final parameter
+        args.push(splitArgs.slice(args.length).join(' '));
+        args = args.map(a => a.trim());
     }
+
+
 
     // Now, copy in the variables defined by the arguments
     for(let i = 0; i < params.length; i++)
@@ -93,7 +105,7 @@ function runCustomCommand (context)
     let variables = resolveVariables(initialVariables, parameterBlock, text);
 
     // Now, make a parse tree from the ${} blocks found in the code portion
-    let parser = new Parser(codeBlock, context);
+    let parser = new Parser(codeBlock);
     let parseTree = parser.run();
 
     context.send(parseTree.evaluate(variables, context));
