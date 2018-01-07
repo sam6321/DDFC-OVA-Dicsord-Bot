@@ -3,7 +3,9 @@ const funcs = require("../funcs.js");
 const availableFuncs =
 {
     randomNumber : funcs.randInt,
-    randomResponse : funcs.sample
+    randomResponse : funcs.sample,
+    setConfig : funcs.setConfig,
+    checkPermissions : funcs.requiredPerms
 };
 
 /**
@@ -112,6 +114,8 @@ class FunctionParseNode extends ParseNode
 
             return stringValue;
         });
+
+        parameters.push(context);
 
         // Call the function with the evaluated values of our children.
         let result = func.apply(null, parameters);
