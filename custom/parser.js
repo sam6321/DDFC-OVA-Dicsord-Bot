@@ -1,3 +1,4 @@
+const funcs = require('../funcs.js');
 const Lexer = require('./lexer.js');
 const Node = require('./node.js');
 
@@ -8,13 +9,26 @@ class Parser
         this.lexer = new Lexer(codeBlock);
     }
 
-    expect (tokenType)
+    expect (...tokenTypes)
     {
+        function expected ()
+        {
+            return tokenTypes.reduce((value, token, index) => {
+                return value + token + index === tokenTypes.length ? "" : " or ";
+            }, "");
+        }
+
         let token = this.lexer.lex();
 
-        if (token.type !== tokenType)
+        if (!token)
         {
-            throw new Error("Parse error: Expected " + tokenType + ". Got: " + token.type);
+            throw new Error("Parse error: Expected " + expected() + ". Got end of input");
+        }
+
+        // Check through the expected tokens list. Need to match at least one of the expected ones.
+        if (!tokenTypes.some(type => token.type === type))
+        {
+            throw new Error("Parse error: Expected " + expected() + ". Got: " + token.type);
         }
 
         return token;
@@ -23,6 +37,42 @@ class Parser
     next ()
     {
         return this.lexer.lex();
+    }
+
+    parseFunctionParameter (scope)
+    {
+        while (true)
+        {
+            let token = this.next();
+            switch (token.type)
+            {
+                case "${":
+                    // Parse a nested expression
+                    this.parseExpression(scope);
+                    break;
+
+                case "id":
+                    // Parse an identifier value
+                    scope.addChild(new Node.Variable(token.value));
+                    break;
+
+                case "raw":
+                    // Parse a raw string
+                    scope.addChild(new Node.Immediate(token.value));
+                    break;
+
+                case ",":
+                    // On to the next parameter
+                    return true;
+
+                case "]":
+                    // End of all parameters
+                    return false;
+
+                default:
+                    throw new Error("Unexpected token while parsing function parameter: " + token.type);
+            }
+        }
     }
 
     parseFunction (scope)
@@ -34,48 +84,23 @@ class Parser
 
         // Always start with an open parameter list ( [ )
         this.expect("[");
+        let done = false;
 
-        while (true)
+        do
         {
-            let token = this.next();
+            // Add the group node for this input.
+            let paramScope = new Node.Group();
 
-            if (!token)
+            // TODO: This is pretty awkward...
+            done = !this.parseFunctionParameter(paramScope);
+
+            if (paramScope.length)
             {
-                throw new Error("Hit end of input while parsing function parameter list.");
-            }
-
-            switch (token.type)
-            {
-                // Now we can either parse an expression that'll resolve to one of this function's parameters, or an immediate value.
-                case "${":
-                    // Ok, we're parsing an expression
-                    this.parseExpression(scope);
-                    break;
-
-                case "id":
-                    scope.addChild(new Node.Immediate(token.value));
-                    break;
-            }
-
-            token = this.next();
-
-            if (!token)
-            {
-                throw new Error("Hit end of input while parsing function parameter list.");
-            }
-
-            if (token.type === "]")
-            {
-                // We're done parsing parameters
-                break;
-            }
-
-            if (token.type !== ",")
-            {
-                // We need commas between expressions.
-                throw new Error("Commas are required between function parameters. Found " + token.type);
+                scope.addChild(paramScope);
             }
         }
+        while(!done);
+
     }
 
     parseExpression (scope)

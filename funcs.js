@@ -100,7 +100,7 @@ module.exports.findMember = function(msg, args)
     return member;
 };
 
-module.exports.randInt = function(min,max)
+module.exports.randInt = function(min, max)
 {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
@@ -175,3 +175,13 @@ module.exports.requiredPerms = function ()
     }
     return "";
 }
+
+module.exports.enumerate = function* (array)
+{
+    let count = 0;
+    for(const element of array)
+    {
+        yield [count, element];
+        count++;
+    }
+};

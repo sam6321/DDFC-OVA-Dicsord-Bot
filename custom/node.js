@@ -2,8 +2,8 @@ const funcs = require("../funcs.js");
 
 const availableFuncs =
 {
-    randomNumber : funcs.randInt,
-    randomResponse : funcs.sample,
+    randomNumber : (...params) => funcs.randInt(...params.slice(0, -1)),
+    randomResponse : (...params) => funcs.sample(...params.slice(0, -1)),
     setConfig : funcs.setConfig,
     checkPermissions : funcs.requiredPerms
 };
@@ -19,6 +19,8 @@ class ParseNode
     {
         this.children = [];
     }
+
+    get length () { return this.children.length; }
 
     addChild (...node)
     {
@@ -78,6 +80,13 @@ class VariableParseNode extends ParseNode
 
     evaluate (globalParams)
     {
+        let value = globalParams[this.name];
+
+        if (value === undefined)
+        {
+            throw new Error("Error evaluating: " + this.name + " is not a variable.");
+        }
+
         return globalParams[this.name]
     }
 }

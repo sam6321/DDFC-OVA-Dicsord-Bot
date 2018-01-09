@@ -48,6 +48,17 @@ class Lexer
         return this.text[this.index + offset];
     }
 
+    str (size=0)
+    {
+        return this.text.substr(this.index, size);
+    }
+
+    consume (amount)
+    {
+        this.index = Math.min(this.index + amount, this.text.length);
+        return this.ch();
+    }
+
     setToken (type, value, secondaryType = "")
     {
         this.token = {
@@ -57,21 +68,16 @@ class Lexer
         };
     }
 
-    consume (amount)
+    lexRawString (until)
     {
-        this.index += amount;
-        return this.ch();
-    }
-
-    lexRawString ()
-    {
-        // Just pull characters out until we hit a ${
+        // Just pull characters out until we hit our 'until' pattern
         let ch = this.ch();
         let string = "";
 
         while (ch)
         {
-            if (ch === '$' && this.ch(1) === "{")
+            let start = this.str(until.length);
+            if (start === until)
             {
                 // This is where we finish our current string.
                 break;
@@ -91,6 +97,11 @@ class Lexer
         let string = "";
         let secondaryType = "variable";
 
+        if (!isAlphaNumeric(ch))
+        {
+            throw new Error("Identifiers must only contain alphanumeric characters. Did you forget ''?");
+        }
+
         while (ch)
         {
             if (ch === ":")
@@ -102,6 +113,7 @@ class Lexer
             }
 
             // Non-alphanumeric = end of this identifier
+            // TODO: In the future if we add numbers, this should only check for alphabetical characters + _ for the first character in the identifier.
             if (!isAlphaNumeric(ch))
             {
                 break;
@@ -150,7 +162,7 @@ class Lexer
                 else
                 {
                     // Not an open expression, just treat as a raw string
-                    this.lexRawString();
+                    this.lexRawString('${');
                 }
 
                 break;
@@ -167,7 +179,7 @@ class Lexer
                 else
                 {
                     // treat as raw string
-                    this.lexRawString();
+                    this.lexRawString('${');
                 }
 
                 break;
@@ -183,7 +195,7 @@ class Lexer
                 else
                 {
                     // treat as raw string
-                    this.lexRawString();
+                    this.lexRawString('${');
                 }
                 break;
 
@@ -198,11 +210,12 @@ class Lexer
                 else
                 {
                     // treat as raw string
-                    this.lexRawString();
+                    this.lexRawString('${');
                 }
 
                 break;
 
+            // Might be a function parameter separator
             case ",":
                 if (stateTop === "[")
                 {
@@ -212,8 +225,25 @@ class Lexer
                 else
                 {
                     // treat as raw string
-                    this.lexRawString();
+                    this.lexRawString('${');
                 }
+                break;
+
+            // Might be a raw string inside a function parameter or expression
+            case "\'":
+
+                // Either lex a raw string until ', or until ${ if we're not in an expression or parameter block.
+                if (stateTop === "[" || stateTop === "${")
+                {
+                    this.consume(1); // Step over the '
+                    this.lexRawString("'");
+                    this.consume(1); // Step over the '
+                }
+                else
+                {
+                    this.lexRawString("${");
+                }
+
                 break;
 
             default:
@@ -225,7 +255,7 @@ class Lexer
                 else
                 {
                     // We're outside a param list or expression, so this is just a raw string.
-                    this.lexRawString();
+                    this.lexRawString('${');
                 }
                 break;
         }
