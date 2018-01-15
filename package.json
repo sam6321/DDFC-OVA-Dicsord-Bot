@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "discord.js": "11.2.1",
-    "ffmpeg-binaries": "^3.2.2-3",
+    "ffmpeg-binaries": "^3.2.2",
     "fs-extra": "^5.0.0",
     "opusscript": "0.0.6",
     "pg": "6.x",
@@ -15,7 +15,7 @@
     "redis": "2.8.0",
     "redite": "1.1.0",
     "seedrandom": "2.4.3",
-    "ytdl-core": "0.18.5"
+    "ytdl-core": "^0.18.7"
   },
   "main": "bot.js",
   "scripts": {

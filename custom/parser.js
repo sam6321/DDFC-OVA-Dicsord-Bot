@@ -52,8 +52,7 @@ class Parser
                     break;
 
                 case "id":
-                    // Parse an identifier value
-                    scope.addChild(new Node.Variable(token.value));
+                    this.parseIdentifier(token, scope);
                     break;
 
                 case "raw":
@@ -100,35 +99,53 @@ class Parser
             }
         }
         while(!done);
-
     }
 
-    parseExpression (scope)
+    parseIdentifier (token, scope)
     {
-        // ${variable | function: [params]}
-
-        // The very first thing we need in an expression is always an variable name, or a function call.
-        // These are both returned as identifier tokens, with the secondaryType referring to the the type of identifier
-        // (function name, or variable name)
-        let identifier = this.expect("id");
         let newScope;
 
-        switch (identifier.secondaryType)
+        switch (token.secondaryType)
         {
             case "function":
-                newScope = new Node.Function(identifier.value);
+                newScope = new Node.Function(token.value);
                 this.parseFunction(newScope);
                 break;
 
             case "variable":
-                newScope = new Node.Variable(identifier.value);
+                newScope = new Node.Variable(token.value);
                 break;
 
             default:
-                throw new Error("Bad identifier secondary type " + identifier.secondaryType);
+                throw new Error("Bad identifier secondary type " + token.secondaryType);
         }
 
         scope.addChild(newScope);
+    }
+
+    parseExpression (scope)
+    {
+        // An expression can contain:
+            // A raw string, encased in '',
+            // An identifier
+
+        let token = this.next();
+        let newScope;
+
+        switch (token.type)
+        {
+            case "id":
+                this.parseIdentifier(token, scope);
+                break;
+
+            case "raw":
+                newScope = Node.Immediate(token.value);
+                scope.addChild(newScope);
+                break;
+
+            default:
+                throw new Error("Error parsing expression. Expected an identifier or raw string, got " + token.type);
+        }
 
         this.expect("}");
     }

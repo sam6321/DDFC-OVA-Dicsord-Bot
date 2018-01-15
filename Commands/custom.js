@@ -111,6 +111,7 @@ function runCustomCommand (context)
     let parser = new Parser(codeBlock);
     let parseTree = parser.run();
 
+    // TODO: Revise the language to take advantage of ${} syntax more.
     context.send(parseTree.evaluate(variables, context));
 }
 

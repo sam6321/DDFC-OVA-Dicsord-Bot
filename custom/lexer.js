@@ -1,18 +1,28 @@
-function isAlphaNumeric (str)
+function isIdentifierChar (str, first=false)
 {
-    let code, i, len;
+    let code = str.charCodeAt(0);
 
-    for (i = 0, len = str.length; i < len; i++) {
-        code = str.charCodeAt(i);
-        if (!(code > 47 && code < 58) && // numeric (0-9)
-            !(code > 64 && code < 91) && // upper alpha (A-Z)
-            !(code > 96 && code < 123)) { // lower alpha (a-z)
-            return false;
-        }
-    }
-    return true;
+    return (code > 47 && code < 58 && !first) || // numeric (0-9), only valid if not first.
+        (code > 64 && code < 91) || // upper alpha (A-Z)
+        (code > 96 && code < 123) || // lower alpha (a-z)
+        (code === 242);
 }
 
+function isWhiteSpace (str)
+{
+    let code = str[0];
+
+    return code === '\u0020' || code === '\u0009' || code === '\u000A' ||
+        code === '\u000C' || code === '\u000D';
+}
+/*
+Revised language
+Everything outside of an initial ${} is treated as a raw string.
+Inside a ${}:
+    strings are encased in ''
+    [ and ] are function parameters
+    words are identifiers, and an identifier that ends with a : is a function
+ */
 
 class Lexer
 {
@@ -20,7 +30,7 @@ class Lexer
     {
         this.text = text.trim();
         this.index = 0;
-        this.state = [];
+        this.depth = 0;
         this.token = null;
 
         // This should lex strings as follows
@@ -38,9 +48,14 @@ class Lexer
         // all other raw values outside of param or expression blocks are just flat raw strings.
     }
 
-    stateTop ()
+    isFinished ()
     {
-        return this.state[this.state.length - 1];
+        return this.index === this.text.length;
+    }
+
+    inExpression ()
+    {
+        return this.depth > 0;
     }
 
     ch (offset=0)
@@ -68,6 +83,18 @@ class Lexer
         };
     }
 
+    lexWhitespace ()
+    {
+        let ch = this.ch();
+
+        while(isWhiteSpace(ch))
+        {
+            ch = this.consume(1);
+        }
+
+        return ch;
+    }
+
     lexRawString (until)
     {
         // Just pull characters out until we hit our 'until' pattern
@@ -88,6 +115,8 @@ class Lexer
         }
 
         this.setToken("raw", string);
+
+        return this.token;
     }
 
     lexIdentifier ()
@@ -97,9 +126,9 @@ class Lexer
         let string = "";
         let secondaryType = "variable";
 
-        if (!isAlphaNumeric(ch))
+        if (!isIdentifierChar(ch, true))
         {
-            throw new Error("Identifiers must only contain alphanumeric characters. Did you forget ''?");
+            throw new Error("Identifiers must only contain alphanumeric characters or underscores, and must not start with a number. Got identifier starting with '" + ch);
         }
 
         while (ch)
@@ -112,9 +141,8 @@ class Lexer
                 break;
             }
 
-            // Non-alphanumeric = end of this identifier
-            // TODO: In the future if we add numbers, this should only check for alphabetical characters + _ for the first character in the identifier.
-            if (!isAlphaNumeric(ch))
+            // Not an identifier char = end of this identifier
+            if (!isIdentifierChar(ch))
             {
                 break;
             }
@@ -126,141 +154,82 @@ class Lexer
         this.setToken("id", string, secondaryType);
     }
 
-    lex ()
+    lexExpression ()
     {
-        let ch = this.ch();
-        let next = this.ch(1);
-        let stateTop = this.stateTop();
-
         // While we're inside an expression or param list, skip over whitespace.
-        while (/\s/.test(ch) && (stateTop === "${" || stateTop === "["))
-        {
-            this.consume(1);
-            ch = this.ch();
+        let ch = this.lexWhitespace(),
             next = this.ch(1);
-        }
 
         switch (ch)
         {
             case undefined:
                 // Hit the end of the input
-                if (stateTop !== undefined)
-                {
-                    throw new Error("Hit end of input without a close for " + stateTop);
-                }
-
                 return null;
 
             // $ might be an open expression
             case "$":
                 if (next === "{")
                 {
-                    this.setToken("${", "${");
-                    this.state.push("${");
+                    this.setToken("${");
+                    this.depth++;
                     this.consume(2);
-                }
-                else
-                {
-                    // Not an open expression, just treat as a raw string
-                    this.lexRawString('${');
                 }
 
                 break;
 
             // } might be the close of an expression.
             case "}":
-                if (stateTop === "${")
-                {
-                    // This is the end of the current ${
-                    this.state.pop();
-                    this.setToken("}");
-                    this.consume(1);
-                }
-                else
-                {
-                    // treat as raw string
-                    this.lexRawString('${');
-                }
-
+                // Note: This is impossible to reach without first hitting a ${
+                // This is the end of the current ${
+                this.depth--;
+                this.setToken("}");
+                this.consume(1);
                 break;
 
             // [ might be the open of a param list
             case "[":
-                if (stateTop === "${")
-                {
-                    this.state.push("[");
-                    this.setToken("[");
-                    this.consume(1);
-                }
-                else
-                {
-                    // treat as raw string
-                    this.lexRawString('${');
-                }
+                this.setToken("[");
+                this.consume(1);
                 break;
 
             // ] might be the close of a param list
             case "]":
-                if (stateTop === "[")
-                {
-                    this.state.pop();
-                    this.setToken("]");
-                    this.consume(1);
-                }
-                else
-                {
-                    // treat as raw string
-                    this.lexRawString('${');
-                }
-
+                this.setToken("]");
+                this.consume(1);
                 break;
 
             // Might be a function parameter separator
             case ",":
-                if (stateTop === "[")
-                {
-                    this.setToken(",");
-                    this.consume(1);
-                }
-                else
-                {
-                    // treat as raw string
-                    this.lexRawString('${');
-                }
+                this.setToken(",");
+                this.consume(1);
                 break;
 
             // Might be a raw string inside a function parameter or expression
             case "\'":
-
-                // Either lex a raw string until ', or until ${ if we're not in an expression or parameter block.
-                if (stateTop === "[" || stateTop === "${")
-                {
-                    this.consume(1); // Step over the '
-                    this.lexRawString("'");
-                    this.consume(1); // Step over the '
-                }
-                else
-                {
-                    this.lexRawString("${");
-                }
-
+                this.consume(1); // Step over the '
+                this.lexRawString("'");
+                this.consume(1); // Step over the '
                 break;
 
             default:
-                if (stateTop === "[" || stateTop === "${")
-                {
-                    // We're inside a param list or expression, so this is an identifier
-                    this.lexIdentifier();
-                }
-                else
-                {
-                    // We're outside a param list or expression, so this is just a raw string.
-                    this.lexRawString('${');
-                }
+                // We're inside an expression, so this is an identifier
+                this.lexIdentifier();
                 break;
         }
 
         return this.token;
+    }
+
+    lex ()
+    {
+        if (this.str(2) === "${" || this.inExpression())
+        {
+            // We're sitting on an open expression, or we're inside an expression right now
+            return this.lexExpression();
+        }
+
+        // If we're not parsing an expression, simply pull out a big string
+        return this.isFinished() ? null : this.lexRawString("${");
     }
 }
 
