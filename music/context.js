@@ -162,6 +162,7 @@ class MusicContext
             catch(e)
             {
                 await msg.channel.send("An error occurred while trying to play audio: " + e);
+                this.stopPlay();
             }
         }
     }
@@ -260,7 +261,7 @@ class MusicContext
             this.stream.destroy();
         }
 
-        if(this.connection.speaking)
+        if(this.connection && this.connection.speaking)
         {
             this.connection.disconnect();
         }
