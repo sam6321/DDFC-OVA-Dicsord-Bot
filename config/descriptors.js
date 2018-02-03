@@ -25,7 +25,7 @@ class RedisUserDescriptor
 
     data (db)
     {
-        return db[this.category][this.user.id];
+        return db[this.category][this.user.id.toString()];
     }
 
     initial ()
@@ -48,7 +48,7 @@ class RedisGuildDescriptor
 
     data (db)
     {
-        return db[this.category][this.guild.id];
+        return db[this.category][this.guild.id.toString()];
     }
 
     initial ()
