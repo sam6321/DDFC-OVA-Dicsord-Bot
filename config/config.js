@@ -10,16 +10,17 @@ let Config, UserDescriptor, GuildDescriptor;
 
 if (globalConfig.redis)
 {
+    const db = RedisConfig.connect(globalConfig.redis);
     // We have a redis URL to use
     console.log("config: Using redis for config storage.");
-    Config = RedisConfig;
+    Config = descriptor => new RedisConfig(db, descriptor);
     UserDescriptor = descriptors.RedisUser;
     GuildDescriptor = descriptors.RedisGuild;
 }
 else
 {
     console.log("config: Using files for config storage.");
-    Config = FileConfig;
+    Config = descriptor => new FileConfig(descriptor);
     UserDescriptor = descriptors.FileUser;
     GuildDescriptor = descriptors.FileGuild;
 }
@@ -31,10 +32,10 @@ module.exports.globalConfig = function ()
 
 module.exports.userConfig = function (user)
 {
-    return new Config(new UserDescriptor(user, globalConfig));
+    return Config(new UserDescriptor(user, globalConfig));
 };
 
 module.exports.guildConfig = function (guild)
 {
-    return new Config(new GuildDescriptor(guild, globalConfig));
+    return Config(new GuildDescriptor(guild, globalConfig));
 };
