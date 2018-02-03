@@ -55,12 +55,13 @@ class MusicSkipHandler extends EventEmitter
         }
 
         // Clear out all votes from people in this channel that have left.
-        Object.keys(this.skipVotes).forEach(k => {
+        for(const k of Object.keys(this.skipVotes))
+        {
             if (!channel.members.has(k))
             {
                 delete this.skipVotes[k];
             }
-        });
+        }
 
         if (this.skipVotes[id])
         {

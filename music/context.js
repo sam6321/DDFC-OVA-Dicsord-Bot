@@ -98,15 +98,15 @@ class MusicContext
     /**
      * Runs a music command on this context
      */
-    run (context)
+    async run (context)
     {
         let msg = context.msg;
         let args = context.args;
 
-        switch(args[1])
+        switch (args[1])
         {
             case "play":
-                this.play(msg, args[2]);
+                await this.play(msg, args[2]);
                 break;
 
             case "skip":
@@ -130,7 +130,7 @@ class MusicContext
      * @param msg - The user's message.
      * @param url - The user's provided url.
      */
-    play (msg, url)
+    async play (msg, url)
     {
         // Check if the play command is valid for this url.
         if(!validate(msg, url))
@@ -154,15 +154,15 @@ class MusicContext
             this.channel = msg.member.voiceChannel;
             this.textChannel = msg.channel;
 
-            this.channel.join()
-                .then(c => {
-                    this.connection = c;
-                    this.startPlay(item);
-                })
-                .catch(e => {
-                    // Couldn't join the channel for some reason.
-                    console.log("An error occurred while trying to play audio: " + e);
-                });
+            try
+            {
+                this.connection = await this.channel.join();
+                await this.startPlay(item);
+            }
+            catch(e)
+            {
+                await msg.channel.send("An error occurred while trying to play audio: " + e);
+            }
         }
     }
 
@@ -200,7 +200,6 @@ class MusicContext
         }
 
         let embed = this.queue.embed();
-
         msg.channel.send({embed});
     }
 
@@ -208,28 +207,8 @@ class MusicContext
      * Start playing a music queue item.
      * @param queueItem - The queue item to begin playing.
      */
-    startPlay (queueItem)
+    async startPlay (queueItem)
     {
-        let ctx = this;
-
-        function playQueueItem (item)
-        {
-            // If the context has moved on to another item while the info for this one was loading, don't play.
-            if(ctx.currentItem !== item)
-            {
-                return;
-            }
-
-            let embed = item.embed().setTitle("Now playing");
-            ctx.textChannel.send({embed});
-
-            ctx.skipHandler.clear(); // Clear the skip handler for this new item.
-
-            ctx.stream = ytdl(item.url, {filter: 'audioonly'});
-            ctx.connection.playStream(ctx.stream, {seek: 0, volume: 1})
-                .on("end", () => ctx.queue.next());
-        }
-
         this.currentItem = queueItem;
 
         if (!this.connection)
@@ -240,7 +219,35 @@ class MusicContext
         }
 
         // Once the info has loaded for the queue item, play it.
-        queueItem.info.then(() => playQueueItem(queueItem));
+        await queueItem.infoPromise;
+
+        // If the context has moved on to another item while the info for this one was loading, don't play.
+        if(this.currentItem !== queueItem)
+        {
+            return;
+        }
+
+        this.skipHandler.clear(); // Clear the skip handler for this new item.
+
+        let availableFormats = queueItem.info.formats.filter(format => format.audioBitrate <= 96 && typeof format.audioBitrate === 'number')
+            .sort((f1, f2) => f2.audioBitrate - f1.audioBitrate);
+
+        if (availableFormats.length === 0)
+        {
+            // Just use the best one
+            this.stream = ytdl.downloadFromInfo(queueItem.info);
+        }
+        else
+        {
+            // Use the selected one
+            this.stream = ytdl.downloadFromInfo(queueItem.info, {format: availableFormats[0]});
+        }
+
+        this.connection.playStream(this.stream, {seek: 0, volume: 1})
+            .on("end", () => this.queue.next());
+
+        let embed = queueItem.embed().setTitle("Now playing");
+        await this.textChannel.send({embed});
     }
 
     /**

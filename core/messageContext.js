@@ -1,4 +1,5 @@
-let bSettings = require("./globalConfig.js")();
+const config = require("../config/config.js");
+const globalConfig = config.globalConfig();
 
 class MessageContext
 {
@@ -6,7 +7,7 @@ class MessageContext
     {
         this.client = client;
         this.msg = msg;
-        this.prefix = bSettings.prefix;
+        this.prefix = globalConfig.prefix;
         this.authorConfig = null;
 
         this.setArgs(msg.content);
@@ -39,7 +40,7 @@ class MessageContext
         this.authorConfig = config;
     }
 
-    send (...response)
+    async send (...response)
     {
         // Filter out all empty strings from the response
         response = response.filter(r => !(typeof r === 'string' && r.length === 0));
@@ -49,8 +50,14 @@ class MessageContext
             return; // Nothing to send.
         }
 
-        return this.channel.send(...response)
-            .catch(err => console.error("Error sending message: " + err.message));
+        try
+        {
+            return await this.channel.send(...response);
+        }
+        catch(err)
+        {
+            console.error("Error sending message: " + err.message);
+        }
     }
 }
 
@@ -73,7 +80,7 @@ class GuildMessageContext extends MessageContext
 
         return !this.guildConfig.disabled.includes(this.command) &&
             (msg.content.startsWith(this.prefix) ||
-            msg.content.startsWith(`${bSettings.prefix}help`));
+            msg.content.startsWith(`${globalConfig.prefix}help`));
     }
 }
 

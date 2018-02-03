@@ -1,5 +1,5 @@
 const Command = require('./command.js');
-const Config = require("./config.js");
+const config = require('../config/config.js');
 const createMessageContext = require('./messageContext.js');
 
 class MessageHandler
@@ -17,21 +17,27 @@ class MessageHandler
     async runMessage (msg)
     {
         let context = createMessageContext(this.client, msg);
-        let guildConfigLoader = null;
+        let save = [];
 
         if (!context)
         {
             return; // Can't create a valid message context.
         }
 
-        // Load up the author's config.
-        let authorConfigLoader = new Config.UserConfigFile(msg.author);
-        context.setAuthorConfig(await authorConfigLoader.load());
+        // Only load the guild config if this is a guild message.
+        let guildConfigLoader;
+        // Load up the user's config
+        let userConfigLoader = config.userConfig(msg.author);
+        save.push(userConfigLoader);
+
+        context.setAuthorConfig(await userConfigLoader.load());
 
         if (context.guild)
         {
             // Load up the config for this guild.
-            guildConfigLoader = new Config.GuildConfigFile(context.guild);
+            guildConfigLoader = config.guildConfig(context.guild);
+            save.push(guildConfigLoader);
+
             context.setGuildConfig(await guildConfigLoader.load());
 
             // Check for any command aliases for this command.
@@ -53,16 +59,10 @@ class MessageHandler
         }
 
         // Dispatch the command, with the appropriate message context.
-        this.commands.dispatch(context.command, context);
+        await this.commands.dispatch(context.command, context);
 
-        if (context.guild)
-        {
-            // Save changes to the guild config that were performed during the command.
-            guildConfigLoader.save();
-        }
-
-        // Save changes to the author's config.
-        authorConfigLoader.save();
+        // Save changes to configs and return when we're done.
+        await Promise.all(save.map(item => item.save()));
     }
 }
 

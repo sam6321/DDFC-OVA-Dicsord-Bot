@@ -5,13 +5,14 @@ exports.info = "Ban a user by their tag, e.g John#1337, id, e.g 2346422415644426
 exports.usage = "*ban (mention/id/username+numbers) (reason)";
 exports.category = "moderation";
 
-exports.call = function (context)
+exports.call = async function (context)
 {
     let args = context.args;
 
     if (!context.member.hasPermission("BAN_MEMBERS"))
     {
-        context.send("Insufficient permissions.");
+        await context.send("Insufficient permissions.");
+        return;
     }
 
     let member = funcs.findMember(context.msg, args);
@@ -19,11 +20,17 @@ exports.call = function (context)
 
     if (!member)
     {
-        context.send("Couldn't find that member." + (joinedArgs.includes("#") ? " Maybe try mentioning that user instead?" : ""));
+        await context.send("Couldn't find that member." + (joinedArgs.includes("#") ? " Maybe try mentioning that user instead?" : ""));
         return;
     }
 
-    member.ban(args.length > 2 ? args.slice(2).join(" ") : "No reason given")
-        .then(() => context.send(member.user.tag + " was banned! Reason: " + (args.length > 2 ? args.slice(2).join(" ") : "No reason given")))
-        .catch(err => context.send("Failed to ban user " + member.user.tag +". Reason: " + err.message));
+    try
+    {
+        await member.ban(args.length > 2 ? args.slice(2).join(" ") : "No reason given");
+        await context.send(member.user.tag + " was banned! Reason: " + (args.length > 2 ? args.slice(2).join(" ") : "No reason given"));
+    }
+    catch(err)
+    {
+        await context.send("Failed to ban user " + member.user.tag +". Reason: " + err.message);
+    }
 };

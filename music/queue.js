@@ -16,40 +16,19 @@ class MusicQueueItem
     constructor (url)
     {
         this.url = url;
-        this._info = null;
-
-        this.infoPromise = ytdl.getInfo(url)
-            .then(info => {
-                this._info = {
-                    title: info.title,
-                    channelURL: info.author.channel_url,
-                    duration: info.length_seconds
-                };
-            })
+        this.loaded = false;
+        this.info = null;
+        this.infoPromise = ytdl.getInfo(url, {filter: 'audioonly'})
+            .then(info => { this.loaded = true; this.info = info; })
             .catch(console.error);
     }
 
     /**
-     * @returns {Promise} A promise for the info of this queue item.
-     */
-    get info ()
-    {
-        return new Promise((resolve, reject) => {
-            this.infoPromise
-                .then(() => resolve(this._info))
-                .catch(reject);
-        });
-    }
-
-    /**
-     * @returns {boolean} true if the item has loaded, false if not.
-     */
-    get loaded () { return this._info !== null; }
-
-    /**
      * @returns {string} The title of this item, or its URL if the info hasn't loaded.
      */
-    get title () { return this.loaded ? this._info.title : this.url; }
+    get title () { return this.loaded ? this.info.title : this.url; }
+    get channelURL () { return this.loaded ? this.info.author.channel_url : ""; }
+    get duration () { return this.loaded ? this.info.length_seconds : ""; }
 
     /**
      * Returns a discordjs RichEmbed representing this item.
@@ -57,18 +36,15 @@ class MusicQueueItem
      */
     embed ()
     {
-        let info = this._info;
-
         let embed = new Discord.RichEmbed();
+        let description = this.title;
 
         if (this.loaded)
         {
-            embed.setDescription(info.title + " (" + funcs.formatTime(info.duration) + ")\n" + this.url);
+            description += ` (${funcs.formatTime(this.duration)})\n${this.url}`;
         }
-        else
-        {
-            embed.setDescription(this.url);
-        }
+
+        embed.setDescription(description);
 
         return embed;
     }
@@ -79,16 +55,14 @@ class MusicQueueItem
      */
     toString ()
     {
-        let info = this._info;
+        let str = this.title;
 
         if (this.loaded)
         {
-            return info.title + " (" + funcs.formatTime(info.duration) + ")\n" + this.url;
+            str += ` (${funcs.formatTime(info.duration)})\n${this.url}`;
         }
-        else
-        {
-            return this.url;
-        }
+
+        return str;
     }
 }
 

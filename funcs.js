@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const bSettings = require("./core/globalConfig.js")();
+const config = require("./config/config.js");
+const globalConfig = config.globalConfig();
 
 const permFlags =
 {

@@ -58,14 +58,14 @@ const people = {
     "supared": "todo ;)"
 };
 
-exports.call = function (context)
+exports.call = async function (context)
 {
     let query = context.args.slice(1).join(' ');
     let rating = "";
 
     if (!query)
     {
-        context.send("I rate your ability to use this command a 0/10.");
+        await context.send("I rate your ability to use this command a 0/10.");
         return;
     }
 
@@ -73,7 +73,7 @@ exports.call = function (context)
     let number = parseFloat(query);
     if (!Number.isNaN(number))
     {
-        context.send("I rate " + number + " **" + (number * 10) + "/10.**");
+        await context.send("I rate " + number + " **" + (number * 10) + "/10.**");
         return;
     }
 
@@ -83,7 +83,7 @@ exports.call = function (context)
         let entry = people[query.toLowerCase()];
         if (entry)
         {
-            context.send(entry);
+            await context.send(entry);
             return;
         }
     }
@@ -114,5 +114,5 @@ exports.call = function (context)
         return replace;
     });
 
-    context.send("I rate " + response + rating);
+    await context.send("I rate " + response + rating);
 };

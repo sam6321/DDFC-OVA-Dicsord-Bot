@@ -7,7 +7,7 @@ exports.info = module.exports.description;
 exports.usage = "*key (your key here)";
 exports.category = "misc";
 
-exports.call = function (context)
+exports.call = async function (context)
 {
     if(context.type !== "dm")
     {
@@ -19,19 +19,19 @@ exports.call = function (context)
     if(!key || !key.length)
     {
         // We're just printing out the key, I guess.
-        context.send(`Your key is: ${context.authorConfig.key}`);
+        await context.send(`Your key is: ${context.authorConfig.key}`);
     }
     else if ((key.length % 3) !== 0)
     {
-        context.send("Key length must be a multiple of 3.");
+        await context.send("Key length must be a multiple of 3.");
     }
     else if (key.length > KEY_MAX_LENGTH)
     {
-        context.send("Key too big.");
+        await context.send("Key too big.");
     }
     else
     {
         context.authorConfig.key = key;
-        context.send(`Your key has been set to ${context.authorConfig.key}.`);
+        await context.send(`Your key has been set to ${context.authorConfig.key}.`);
     }
 };

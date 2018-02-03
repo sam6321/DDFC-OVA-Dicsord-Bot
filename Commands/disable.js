@@ -3,9 +3,9 @@ exports.usage = "*disable (command)";
 exports.info = module.exports.description;
 exports.category = "administration";
 
-exports.call = function (context)
+exports.call = async function (context)
 {
     let config = require("../Commands/config.js");
     context.setArgs("config add disabled " + context.args[1]);
-    config.call(context);
+    await config.call(context);
 };

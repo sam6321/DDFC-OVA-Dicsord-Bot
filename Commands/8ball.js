@@ -9,5 +9,5 @@ const responses = ["Yes.","Absolutely.","I garuntee it.","Probably.","I have no 
 
 exports.call = async function (context)
 {
-    context.send(funcs.sample(responses));
+    await context.send(funcs.sample(responses));
 };

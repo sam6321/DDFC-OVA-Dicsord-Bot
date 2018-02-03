@@ -130,13 +130,16 @@ class CommandDispatcher
      * @param name - The command to call.
      * @param args - Arguments for the command.
      */
-    dispatch (name, ...args)
+    async dispatch (name, ...args)
     {
         let command = this._commands[name];
+
         if (command)
         {
-            command(args);
+            return await command(args);
         }
+
+        return null;
     }
 
     /**

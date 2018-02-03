@@ -29,7 +29,7 @@ exports.call = async function (context)
         description = "No results: " + description;
     }
 
-    embed.setDescription(description)
+    embed.setDescription(description);
 
-    context.send({embed});
+    await context.send({embed});
 };

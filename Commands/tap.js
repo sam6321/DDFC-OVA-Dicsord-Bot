@@ -5,6 +5,11 @@ exports.info = module.exports.description;
 exports.usage = "*tap (number of cups)";
 exports.category = "hidden";
 
+async function wait (ms)
+{
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 const responses = [
     "*liquid noises*",
     "*fluid noises*",
@@ -40,41 +45,40 @@ const responses = [
     "*splash*"
 ];
 
-exports.call = function (context)
+exports.call = async function (context)
 {
     let count = parseInt(context.args[1]);
 
     if (count === undefined || Number.isNaN(count))
     {
-        context.send("Please request a valid amount.");
+        await context.send("Please request a valid amount.");
         return;
     }
 
     if (count > 50)
     {
-        context.send("No, you'll dry up the tap.");
+        await context.send("No, you'll dry up the tap.");
         return;
     }
     else if(count === 0)
     {
-        context.send("Well if you don't want anything, why are you using the tap?");
+        await context.send("Well if you don't want anything, why are you using the tap?");
         return;
     }
     else if(count < 0)
     {
-        context.send("You can't deposit anything in to the tap.");
+        await context.send("You can't deposit anything in to the tap.");
         return;
     }
 
     context.send(funcs.sample(responses));
+    await wait(funcs.mapLinear(count, 0, 50, 500, 3000)); // Map the count to a delay time.
 
-    setTimeout(() => {
-        let text = "";
-        for(let i = 0; i < count; ++i)
-        {
-            text += ":milk: ";
-        }
+    let text = "";
+    for(let i = 0; i < count; ++i)
+    {
+        text += ":milk: ";
+    }
 
-        context.send(text);
-    }, funcs.mapLinear(count, 0, 50, 500, 3000)); // Map the count to a delay time.
+    await context.send(text);
 };

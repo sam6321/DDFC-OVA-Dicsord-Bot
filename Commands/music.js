@@ -7,11 +7,11 @@ exports.category = "music";
 
 let contexts = {};
 
-exports.call = function (messageContext)
+exports.call = async function (messageContext)
 {
     if(!messageContext.guild)
     {
-        messageContext.send("Can't access music commands outside of a guild.");
+        await messageContext.send("Can't access music commands outside of a guild.");
         return;
     }
 

@@ -5,7 +5,7 @@ exports.info = module.exports.description;
 exports.usage = "*roll (number of sides)";
 exports.category = "misc";
 
-exports.call = function (context)
+exports.call = async function (context)
 {
     let args = context.args;
     let max = 6;
@@ -20,14 +20,14 @@ exports.call = function (context)
     if (max < 2) //User being a douche and trying to roll a die that doesn't exist :lul:
     {
         let s = max === 1 ? "" : "s";
-        context.send("I don't appear to have a die with " + max + " side" + s + ", wonder why...");
+        await context.send("I don't appear to have a die with " + max + " side" + s + ", wonder why...");
     }
     else if (max === 2)
     {
-        context.send("I flipped a coin and got " + (outcome === 1 ? "tails!" : "heads!"));
+        await context.send("I flipped a coin and got " + (outcome === 1 ? "tails!" : "heads!"));
     }
     else
     {
-        context.send("I rolled a "+max+" sided die and got: "+outcome+".");
+        await context.send("I rolled a "+max+" sided die and got: "+outcome+".");
     }
 };

@@ -6,7 +6,7 @@ exports.info = module.exports.description;
 exports.usage = "*encrypt (cipher) (your text here)";
 exports.category = "misc";
 
-exports.call = function (context)
+exports.call = async function (context)
 {
     // Can't delete DM messages.
     if(context.guild)
@@ -22,6 +22,6 @@ exports.call = function (context)
         embed.setTitle("Your encrypted message is:");
         embed.setDescription(text);
 
-        context.send({embed});
+        await context.send({embed});
     }
 };

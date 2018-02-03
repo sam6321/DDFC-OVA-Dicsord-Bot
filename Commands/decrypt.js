@@ -6,7 +6,7 @@ exports.info = module.exports.description;
 exports.usage = "*decrypt (cipher) (your text here)";
 exports.category = "misc";
 
-exports.call = function (context)
+exports.call = async function (context)
 {
     let text = encryption('decrypt');
 
@@ -16,6 +16,6 @@ exports.call = function (context)
         embed.setTitle("Your decrypted message is:");
         embed.setDescription(text);
 
-        context.send({embed});
+        await context.send({embed});
     }
 };

@@ -112,17 +112,17 @@ function runCustomCommand (context)
     let parseTree = parser.run();
 
     // TODO: Revise the language to take advantage of ${} syntax more.
-    context.send(parseTree.evaluate(variables, context));
+    return parseTree.evaluate(variables, context);
 }
 
-exports.call = function (context)
+exports.call = async function (context)
 {
     let args = context.args;
     let settings = context.guildConfig;
 
     if (!settings)
     {
-        context.send("This command can only be used from within a guild.");
+        await context.send("This command can only be used from within a guild.");
         return;
     }
 
@@ -130,16 +130,17 @@ exports.call = function (context)
     {
         let alias = require("./alias.js");
         context.setArgs("*alias " + args[2] + " *custom " + args.slice(3).join(" "));
-        alias.call(context);
+        await alias.call(context);
         return;
     }
 
     try
     {
-        runCustomCommand(context);
+        let response = runCustomCommand(context);
+        await context.send(response);
     }
     catch(e)
     {
-        context.send(e.message);
+        await context.send(e.message);
     }
 };

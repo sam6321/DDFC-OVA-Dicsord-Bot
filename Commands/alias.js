@@ -5,11 +5,11 @@ exports.category = "administration";
 
 // TODO: Prevent people from overriding inbuilt functions with aliases.
 
-exports.call = function (context)
+exports.call = async function (context)
 {
     if (!context.guild)
     {
-        context.send("This command can only be used from within a guild.");
+        await context.send("This command can only be used from within a guild.");
         return;
     }
 
@@ -52,5 +52,5 @@ exports.call = function (context)
             break;
     }
 
-    context.send(response);
+    await context.send(response);
 };
