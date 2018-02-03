@@ -35,7 +35,7 @@ function loadFromEnv (env)
 
     for (const [key, value] of Object.entries(envMap))
     {
-        if (key in env)
+        if (value in env)
         {
             config[key] = env[value];
             loaded = true; // At least one item loaded, so the env is somewhat correct.
