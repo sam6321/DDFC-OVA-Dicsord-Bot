@@ -25,6 +25,8 @@ else
     GuildDescriptor = descriptors.FileGuild;
 }
 
+let cache = {};
+
 module.exports.globalConfig = function ()
 {
     return globalConfig;
@@ -32,10 +34,28 @@ module.exports.globalConfig = function ()
 
 module.exports.userConfig = function (user)
 {
-    return Config(new UserDescriptor(user, globalConfig));
+    let id = `user_${user.id}`;
+
+    let config = cache[id];
+    if (config === undefined)
+    {
+        config = Config(new UserDescriptor(user, globalConfig));
+        cache[id] = config;
+    }
+
+    return config;
 };
 
 module.exports.guildConfig = function (guild)
 {
-    return Config(new GuildDescriptor(guild, globalConfig));
+    let id = `guild_${guild.id}`;
+
+    let config = cache[id];
+    if (config === undefined)
+    {
+        config = Config(new GuildDescriptor(guild, globalConfig));
+        cache[id] = config;
+    }
+
+    return config;
 };

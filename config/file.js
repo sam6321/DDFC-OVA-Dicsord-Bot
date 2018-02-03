@@ -26,22 +26,26 @@ class FileConfig
     {
         let path = this.descriptor.path;
 
-        if (!await fse.pathExists(path))
+        if (!this.config)
         {
-            this.config = await this.initial();
-        }
-        else
-        {
-            let config = await fse.readFile(path, 'utf8');
 
-            if (!config)
+            if (!await fse.pathExists(path))
             {
-                console.error(`Warning: Config file ${path} is empty. Recreating...`);
                 this.config = await this.initial();
             }
             else
-            {
-                this.config = JSON.parse(config);
+                {
+                let config = await fse.readFile(path, 'utf8');
+
+                if (!config)
+                {
+                    console.error(`Warning: Config file ${path} is empty. Recreating...`);
+                    this.config = await this.initial();
+                }
+                else
+                {
+                    this.config = JSON.parse(config);
+                }
             }
         }
 
@@ -51,7 +55,6 @@ class FileConfig
     async save ()
     {
         await fse.writeFile(this.descriptor.path, JSON.stringify(this.config, null, 4));
-        return this;
     }
 }
 

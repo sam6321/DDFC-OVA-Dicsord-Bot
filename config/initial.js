@@ -18,13 +18,13 @@ module.exports.global = function()
  */
 module.exports.guild = function (globalConfig, guild)
 {
-    let textChannel = this.guild.channels.find('type', 'text');
+    let textChannel = guild.channels.find('type', 'text');
 
     return {
         banned_users    :   [],
         custom_commands :   [],
         prefix          :   globalConfig.prefix,
-        admins          :   [this.guild.ownerID],
+        admins          :   [guild.ownerID],
         enabled_events  :   [],
         greet           :   true,
         greet_channel   :   textChannel.id, // defaultChannel is deprecated, just default to the very first channel.

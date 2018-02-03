@@ -24,27 +24,28 @@ class RedisConfig
         return new Redite({client});
     }
 
-    get data () { return this.descriptor.data(this.connection); }
-
     async initial ()
     {
-        let initial = this.descriptor.initial();
+        let initial = this.descriptor.initial(this.connection);
 
-        await this.data.set(initial);
+        await this.descriptor.setData(this.connection, initial);
 
         return initial;
     }
 
     async load ()
     {
-        try
+        if (this.config === null)
         {
-            this.config = await this.data.get;
-        }
-        catch (e)
-        {
-            // Doesn't exist
-            this.config = await this.initial();
+            try
+            {
+                this.config = await this.descriptor.getData(this.connection);
+            }
+            catch (e)
+            {
+                // Doesn't exist
+                this.config = await this.initial();
+            }
         }
 
         return this.config;
@@ -54,7 +55,7 @@ class RedisConfig
     {
         try
         {
-            await this.data.set(this.config);
+            await this.descriptor.setData(this.connection, this.config);
         }
         catch (e)
         {

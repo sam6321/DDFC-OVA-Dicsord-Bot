@@ -18,14 +18,18 @@ class RedisUserDescriptor
 {
     constructor (user, globalConfig)
     {
-        this.category = "users";
         this.user = user;
         this.globalConfig = globalConfig;
     }
 
-    data (db)
+    async setData (db, data)
     {
-        return db[this.category][this.user.id.toString()];
+        return await db[`user_${this.user.id}`].set(data);
+    }
+
+    async getData (db)
+    {
+        return await db[`user_${this.user.id}`].get;
     }
 
     initial ()
@@ -41,14 +45,18 @@ class RedisGuildDescriptor
 {
     constructor (guild, globalConfig)
     {
-        this.category = "guild";
         this.guild = guild;
         this.globalConfig = globalConfig;
     }
 
-    data (db)
+    async setData (db, data)
     {
-        return db[this.category][this.guild.id.toString()];
+        return await db[`guild_${this.guild.id}`].set(data);
+    }
+
+    async getData (db)
+    {
+        return await db[`guild_${this.guild.id}`].get;
     }
 
     initial ()
